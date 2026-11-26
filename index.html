@@ -123,6 +123,7 @@ h1{font-size:clamp(30px,6vw,46px);line-height:1.08;font-weight:800;margin:0 0 8p
         <button class="btn" id="addpage" type="button">加入 PDF 頁面</button>
       </div>
       <p class="hint">iPhone 按「存成圖片」後選「儲存影像」就會存進相簿；PDF 選「儲存到檔案」或直接傳 LINE。</p>
+      <button class="btn pri" id="next" type="button" hidden>下一張照片</button>
       <button class="btn" id="back" type="button">← 回去調整四個角</button>
     </div>
   </div>
@@ -379,7 +380,7 @@ async function loadFile(f){
   try{const img=new Image();img.src=url;await img.decode();setSource(img,img.naturalWidth,img.naturalHeight)}
   catch(_){toast('這個檔案讀不到，請換一張 JPG 或 PNG 照片。')}
   finally{URL.revokeObjectURL(url);busy(false);updQ()}}
-function updQ(){$('#queue').textContent=queue.length?`還有 ${queue.length} 張照片等著處理`:''}
+function updQ(){$('#queue').textContent=queue.length?`還有 ${queue.length} 張照片等著處理`:'';const n=$('#next');n.hidden=!queue.length;n.textContent=`下一張照片（還有 ${queue.length} 張）`}
 function showEdit(){$('#edit').hidden=false;$('#done').hidden=true;layout()}
 function showDone(){$('#edit').hidden=true;$('#done').hidden=false;$('#stage').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
 async function doWarp(keepRot){
@@ -460,6 +461,7 @@ $('#redetect').onclick=()=>{if(src){autoDetect();draw()}};
 $('#full').onclick=()=>{if(!src)return;const W=src.width,H=src.height;quad=[[0,0],[W,0],[W,H],[0,H]];draw();say('已選取整張照片。')};
 $('#go').onclick=()=>{if(src)doWarp(false)};
 $('#back').onclick=showEdit;
+$('#next').onclick=()=>{if(queue.length)loadFile(queue.shift())};
 $('#filters').onclick=e=>{const b=e.target.closest('[data-f]');if(!b||b.dataset.f===filt)return;filt=b.dataset.f;
   for(const c of $('#filters').children)c.setAttribute('aria-pressed',c===b);rerender()};
 $('#ratios').onclick=e=>{const b=e.target.closest('[data-r]');if(!b||b.dataset.r===ratio)return;ratio=b.dataset.r;
