@@ -2,212 +2,275 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="文件轉正">
-<meta name="theme-color" content="#22272b">
+<meta name="theme-color" content="#111315">
 <title>文件拍照轉正</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
-/* VOICE: calm, practical, a pocket scanner for someone between client meetings
-   IDEA: a scanner bed: a dark graphite desk where the paper is the brightest thing
-   PICTURE: the photo itself with the found page outlined and four signal-orange corner pins
-   COLOUR and TYPE: graphite stage, paper white, one signal orange; Noto Sans TC 800/400
-   LAYOUT: modest title, then the full-width stage; result + controls side by side on wide screens, stacked on phones */
-:root{color-scheme:light dark;--bg:light-dark(#fbfbfa,#111315);--ink:light-dark(#16191b,#eceeef);--mute:light-dark(#5a636a,#9aa3a9);--line:light-dark(#dfe2e4,#2a2f33);--stage:light-dark(#22272b,#07080a);--acc:#ff5b2e;--chip:rgba(255,255,255,.08)}
-:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
-*{box-sizing:border-box;min-width:0}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;overflow-x:clip}
-.band{padding:clamp(22px,4vw,48px) max(5vw,16px)}
-.top{padding-bottom:18px}
-h1{font-size:clamp(30px,6vw,46px);line-height:1.08;font-weight:800;margin:0 0 8px;text-wrap:balance}
-.top p{margin:0;color:var(--mute);max-width:40em}
-.stage{background:var(--stage);color:#f2f3f4;position:relative}
-.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;max-width:1240px;margin:0 auto 14px}
-.bar .q{color:#c9ced2;font-size:14px;margin-left:auto}
-.btn{min-height:44px;padding:0 16px;border-radius:12px;border:1px solid rgba(255,255,255,.24);background:transparent;color:#f2f3f4;font:600 16px/1 inherit;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
-.btn:hover{border-color:rgba(255,255,255,.5)}
-.btn.pri{background:var(--acc);border-color:var(--acc);color:#1d0b04}
-.btn:disabled{opacity:.4;cursor:default}
-.btn svg{width:20px;height:20px;flex:none}
+/* VOICE: a quiet, exact pocket scanner for someone between client meetings
+   IDEA: a light table: a dark graphite bed where the paper is the brightest thing in the room
+   PICTURE: the photo itself, the found page lit up, four signal-orange pins and white edge bars
+   COLOUR and TYPE: graphite surfaces, paper white, one signal orange; Noto Sans TC 800/500
+   LAYOUT: app shell — slim top bar, full-bleed stage, tool strip and a thumb-reach action bar */
+:root{color-scheme:dark;--bg:#111315;--stage:#08090a;--panel:#171a1d;--panel2:#22262a;--line:#2a2f34;--ink:#eef0f1;--mute:#9aa3aa;--acc:#ff5b2e;--accink:#1f0c05;--warn:#ffc24b;--hd:56px;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--sl:max(14px,env(safe-area-inset-left,0px));--sr:max(14px,env(safe-area-inset-right,0px))}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:16px/1.5 "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;overflow:hidden;-webkit-text-size-adjust:100%}
+button,input,select,label{font:inherit;color:inherit}
 :focus-visible{outline:3px solid #ffb199;outline-offset:2px}
-.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
-.wrap{max-width:1240px;margin:0 auto}
-#ed{position:relative;display:flex;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
+svg.i{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
+.top{height:calc(var(--hd) + var(--st));padding:var(--st) var(--sr) 0 var(--sl);display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;margin-right:auto;white-space:nowrap}
+.brand svg{width:30px;height:30px;flex:none}
+.nav{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+.nav button{border:0;background:transparent;min-height:38px;padding:0 12px;border-radius:9px;font-weight:700;font-size:15px;color:var(--mute);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.nav button[aria-current=true]{background:var(--panel2);color:var(--ink)}
+.nav button:disabled{opacity:.35;cursor:default}
+.badge{min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:var(--acc);color:var(--accink);font-size:13px;font-weight:800;display:inline-grid;place-items:center;font-variant-numeric:tabular-nums}
+.badge.z{background:var(--panel2);color:var(--mute)}
+.view{height:calc(100vh - var(--hd) - var(--st));height:calc(100dvh - var(--hd) - var(--st));display:flex;flex-direction:column}
+.view[hidden]{display:none}
+.stage{flex:1;min-height:0;position:relative;display:grid;place-items:center;overflow:hidden;background:radial-gradient(110% 85% at 50% 42%,#1d2125 0%,var(--stage) 72%)}
 #cv{display:block;touch-action:none;cursor:crosshair}
-#loupe{position:absolute;top:10px;width:124px;height:124px;border-radius:50%;border:3px solid #fff;box-shadow:0 6px 20px rgba(0,0,0,.5);pointer-events:none;background:#000}
-#msg{margin:12px auto 0;color:#d5d9dc;font-size:15px;text-align:center;max-width:36em;min-height:1.6em}
-.acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:14px}
-.acts .pri{min-width:150px}
-#done{display:grid;gap:20px;align-items:start}
-.pv{display:flex;justify-content:center;background:rgba(255,255,255,.04);border-radius:14px;padding:14px}
-#out{display:block;max-width:100%;max-height:64vh;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.45)}
-.side{display:grid;gap:16px}
-.grp h3{font-size:14px;font-weight:600;color:#aeb5ba;margin:0 0 8px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:var(--chip);color:#e9ecee;font:500 15px/1 inherit;cursor:pointer}
-.chip[aria-pressed=true]{background:#f2f3f4;color:#16191b;border-color:#f2f3f4;font-weight:600}
-.row{display:flex;flex-wrap:wrap;gap:10px}
-.row .btn{flex:1 1 140px}
-.hint{font-size:14px;color:#c9ced2;margin:0}
-#busy{position:absolute;inset:0;background:rgba(7,8,10,.6);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;z-index:3}
-#busy[hidden],[hidden]{display:none!important}
-#pages h2,.tips h2{font-size:22px;margin:0 0 12px;line-height:1.2}
-#plist{list-style:none;margin:0 0 14px;padding:4px 2px 10px;display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory}
-#plist li{flex:none;position:relative;scroll-snap-align:start}
-#plist img{display:block;height:150px;width:auto;max-width:200px;border:1px solid var(--line);background:#fff;border-radius:6px}
-#plist span{position:absolute;left:6px;bottom:6px;background:rgba(22,25,27,.8);color:#fff;font-size:13px;padding:1px 8px;border-radius:99px}
-#plist .x{position:absolute;top:-8px;right:-8px;width:36px;height:36px;border-radius:50%;border:2px solid var(--bg);background:#16191b;color:#fff;font-size:20px;line-height:1;cursor:pointer}
-#pages .row .btn{color:var(--ink);border-color:var(--line);flex:0 1 auto}
-#pages .row .btn.pri{color:#1d0b04;border-color:var(--acc)}
-.tips{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));max-width:1240px;margin:0 auto}
-.tips ul{margin:0;padding-left:1.2em;color:var(--mute)}
-.tips li{margin:4px 0}
-.tips p{margin:0;color:var(--mute)}
-#toast{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);background:#16191b;color:#fff;padding:12px 18px;border-radius:12px;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:9;max-width:calc(100vw - 32px);text-align:center;transition:opacity .25s}
-@media(min-width:880px){#done{grid-template-columns:minmax(0,1fr) 320px}}
-@media(max-width:600px){.bar .q{width:100%;margin:0}.bar .btn{flex:1 1 0}#plist img{height:120px}}
-@media(prefers-reduced-motion:reduce){#toast{transition:none}}
+#loupe{position:absolute;top:12px;width:124px;height:124px;border-radius:50%;border:3px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,.6);pointer-events:none;background:#000}
+.pill{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);padding:7px 14px;border-radius:99px;background:rgba(17,19,21,.86);border:1px solid var(--line);font-size:14px;color:#d8dcdf;text-align:center;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+#cmp{transition:opacity .5s}#cmp.gone{opacity:0}
+.tools{display:flex;justify-content:center;gap:4px;padding:6px var(--sr) 6px var(--sl);border-top:1px solid var(--line)}
+.tool{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:78px;min-height:58px;padding:6px 10px;border:0;background:transparent;border-radius:12px;font-size:13px;color:#d8dcdf;cursor:pointer}
+.tool:hover{background:var(--panel)}
+.bar{display:flex;gap:10px;align-items:center;padding:10px var(--sr) calc(10px + var(--sb)) var(--sl);background:var(--panel);border-top:1px solid var(--line)}
+.btn{min-height:48px;padding:0 16px;border-radius:14px;border:1px solid var(--line);background:var(--panel2);font-weight:700;font-size:16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;white-space:nowrap;user-select:none;-webkit-user-select:none}
+.btn:hover{border-color:#3a4148}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--accink);font-weight:800}
+.btn.pri:hover{filter:brightness(1.06)}
+.btn.grow{flex:1}
+.btn:disabled{opacity:.4;cursor:default}
+.rv{flex:1;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto}
+#pv{display:block;background:#fff;box-shadow:0 14px 40px rgba(0,0,0,.55);touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.panel{background:var(--panel);border-top:1px solid var(--line);padding:10px var(--sr) 6px var(--sl);max-height:44vh;overflow:auto}
+.seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:3px;margin-bottom:8px}
+.seg button{border:0;background:transparent;min-height:36px;padding:0 16px;border-radius:8px;font-weight:700;font-size:14px;color:var(--mute);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--panel2);color:var(--ink)}
+.fl{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 8px;scroll-snap-type:x proximity}
+.fb{flex:none;width:74px;border:0;background:transparent;padding:0;cursor:pointer;color:var(--mute);font-size:13px;text-align:center;scroll-snap-align:start}
+.fb img{display:block;width:74px;height:96px;object-fit:cover;border-radius:10px;border:2px solid transparent;background:#2a2f34;margin-bottom:4px}
+.fb[aria-pressed=true]{color:var(--ink);font-weight:700}
+.fb[aria-pressed=true] img{border-color:var(--acc)}
+.adj{display:grid;gap:12px;padding:2px 0 8px}
+.ar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ar>span{width:3.2em;font-size:14px;color:var(--mute);flex:none}
+.chip{min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--bg);font-size:14px;font-weight:500;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:#111315;border-color:var(--ink);font-weight:700}
+.ib{width:44px;height:42px;border-radius:11px;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center;cursor:pointer;color:#d8dcdf}
+.ib:disabled{opacity:.3;cursor:default}
+.sl{display:flex;align-items:center;gap:10px;flex:1}
+.sl output{width:2.6em;text-align:right;font-size:14px;color:var(--mute);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:32px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:var(--line)}
+input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-9px;border-radius:50%;background:var(--acc);border:3px solid var(--bg)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--acc);border:3px solid var(--bg)}
+.link{border:0;background:transparent;color:var(--mute);font-size:14px;text-decoration:underline;cursor:pointer;padding:8px 4px;min-height:40px}
+.dbody{flex:1;min-height:0;overflow:auto;padding:14px var(--sr) 20px var(--sl)}
+.dhead{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:0 auto 16px;max-width:1100px}
+.fld{display:grid;gap:4px;font-size:13px;color:var(--mute)}
+.fld.g{flex:1 1 220px}
+.fld input,.fld select{min-height:46px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:0 12px;font-size:16px;width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;max-width:1100px;margin:0 auto}
+.pg{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:8px;display:grid;gap:6px}
+.th{position:relative;aspect-ratio:3/4;background:var(--stage);border-radius:10px;display:grid;place-items:center;overflow:hidden;border:0;cursor:pointer;padding:10px}
+.th img{max-width:100%;max-height:100%;display:block;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.no{position:absolute;left:8px;top:8px;min-width:26px;height:26px;padding:0 7px;border-radius:99px;background:rgba(17,19,21,.85);font-size:13px;font-weight:800;display:grid;place-items:center}
+.warn{position:absolute;right:8px;top:8px;padding:2px 8px;border-radius:99px;background:var(--warn);color:#2a1d00;font-size:12px;font-weight:800}
+.pga{display:flex;justify-content:space-between}
+.pga .ib{border:0;background:transparent;width:40px}
+.pga .ib:hover:not(:disabled){background:var(--panel2)}
+.add{border:1.5px dashed #3a4148;border-radius:16px;display:grid;align-content:center;gap:10px;padding:16px;min-height:220px}
+.add .btn{width:100%}
+.empty{display:grid;justify-items:center;text-align:center;gap:12px;padding:8vh 16px;max-width:420px;margin:0 auto}
+.empty svg{width:132px;height:110px}
+.empty h2{margin:0;font-size:22px}
+.empty p{margin:0;color:var(--mute)}
+.empty .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#toast{position:fixed;left:50%;bottom:calc(86px + var(--sb));transform:translateX(-50%);display:flex;align-items:center;gap:12px;background:#f2f3f4;color:#16191b;padding:10px 16px;border-radius:14px;font-size:15px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.45);z-index:20;width:max-content;max-width:calc(100vw - 28px);transition:opacity .2s}
+#toast button{border:0;background:transparent;color:#c63a12;font-weight:800;cursor:pointer;min-height:36px;padding:0 4px}
+#busy{position:fixed;inset:0;background:rgba(5,6,7,.66);display:grid;place-items:center;z-index:30}
+#busy>div{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px 22px;width:min(320px,calc(100vw - 40px));display:grid;gap:12px;text-align:center;font-weight:700}
+.prog{height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
+[hidden]{display:none!important}
+@media(min-width:900px){.rv{grid-template-columns:minmax(0,1fr) 360px;grid-template-rows:minmax(0,1fr)}.panel{max-height:none;border-top:0;border-left:1px solid var(--line);padding:16px 18px}.fl{flex-wrap:wrap;overflow:visible}.bar{justify-content:flex-end}.bar .btn.grow{flex:0 1 260px}}
+@media(max-width:420px){.brand span{display:none}.tool{min-width:0;flex:1}.btn{padding:0 12px}}
+@media(prefers-reduced-motion:reduce){#toast,.prog i{transition:none}}
 </style>
 </head>
 <body>
-<header class="band top">
-  <h1>文件拍照轉正</h1>
-  <p>拍下桌上的文件，自動找出四個角、拉成正面，再套上掃描效果，存成圖片或合併成 PDF。</p>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-cam" viewBox="0 0 24 24"><path d="M3.5 8h3.2l1.8-2.6h7l1.8 2.6h3.2v11h-17z"/><circle cx="12" cy="13.2" r="3.6"/></symbol>
+  <symbol id="i-img" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="m4 17 5-5 4 4 2.5-2.5L20 18"/><circle cx="15.5" cy="9" r="1.6"/></symbol>
+  <symbol id="i-auto" viewBox="0 0 24 24"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><path d="m9 9.5 6-1.5 1 6.5-6.5 1z"/></symbol>
+  <symbol id="i-full" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></symbol>
+  <symbol id="i-rotl" viewBox="0 0 24 24"><path d="M4 4v6h6"/><path d="M4.6 10A8 8 0 1 1 6 16.5"/></symbol>
+  <symbol id="i-rotr" viewBox="0 0 24 24"><path d="M20 4v6h-6"/><path d="M19.4 10A8 8 0 1 0 18 16.5"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M8 3.5h7l4 4v11.5a1.5 1.5 0 0 1-1.5 1.5h-9.5A1.5 1.5 0 0 1 6.5 19V5A1.5 1.5 0 0 1 8 3.5z"/><path d="M14.5 3.5V8h4.5M9.5 12.5h6M9.5 16h6"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M5 19h3.5L19 8.5 15.5 5 5 15.5z"/><path d="m13.5 7 3.5 3.5"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 12.5h9l1-12.5"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M8 3.5h7l4 4v11.5a1.5 1.5 0 0 1-1.5 1.5h-9.5A1.5 1.5 0 0 1 6.5 19V5A1.5 1.5 0 0 1 8 3.5z"/><path d="M14.5 3.5V8h4.5M12 11v6m0 0-2.5-2.5M12 17l2.5-2.5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#ff5b2e"/><path d="M7 11V8.5A1.5 1.5 0 0 1 8.5 7H11M21 7h2.5A1.5 1.5 0 0 1 25 8.5V11M25 21v2.5a1.5 1.5 0 0 1-1.5 1.5H21M11 25H8.5A1.5 1.5 0 0 1 7 23.5V21" fill="none" stroke="#1f0c05" stroke-width="1.8" stroke-linecap="round"/><rect x="11" y="10" width="10" height="12" rx="1" fill="#fbfaf6"/><path d="M13.2 13.5h5.6M13.2 16h5.6M13.2 18.5h3.4" stroke="#1f0c05" stroke-width="1.3" stroke-linecap="round"/></svg><span>文件轉正</span></div>
+  <nav class="nav" aria-label="畫面">
+    <button type="button" id="nav-edit" aria-current="true">編輯</button>
+    <button type="button" id="nav-doc" aria-current="false">文件 <span class="badge z" id="nav-count">0</span></button>
+  </nav>
 </header>
 
-<section class="band stage" id="stage">
-  <div class="bar">
-    <label class="btn pri" for="cam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>拍照</label>
-    <input class="vh" id="cam" type="file" accept="image/*" capture="environment">
-    <label class="btn" for="pick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="m4 17 5-5 4 4 2.5-2.5L20 18"/><circle cx="15.5" cy="9" r="1.6"/></svg>選相片</label>
-    <input class="vh" id="pick" type="file" accept="image/*" multiple>
-    <span class="q" id="queue" aria-live="polite"></span>
-  </div>
+<input class="vh" id="cam" type="file" accept="image/*" capture="environment">
+<input class="vh" id="pick" type="file" accept="image/*" multiple>
 
-  <div class="wrap" id="edit">
-    <div id="ed"><canvas id="cv" aria-label="照片與文件四角，可拖曳調整"></canvas><canvas id="loupe" hidden></canvas></div>
-    <p id="msg" aria-live="polite"></p>
-    <div class="acts">
-      <button class="btn" id="redetect" type="button">重新偵測</button>
-      <button class="btn" id="full" type="button">用整張照片</button>
-      <button class="btn pri" id="go" type="button">轉正</button>
+<main>
+  <section class="view" id="v-edit" aria-label="調整四個角">
+    <div class="stage" id="ed-stage">
+      <canvas id="cv" aria-label="照片與文件四角，可拖曳調整"></canvas>
+      <canvas id="loupe" hidden></canvas>
+      <p class="pill" id="hint" aria-live="polite"></p>
     </div>
-  </div>
+    <div class="tools">
+      <button class="tool" type="button" id="t-auto"><svg class="i"><use href="#i-auto"/></svg>自動偵測</button>
+      <button class="tool" type="button" id="t-full"><svg class="i"><use href="#i-full"/></svg>整張照片</button>
+      <label class="tool" for="cam"><svg class="i"><use href="#i-cam"/></svg>重拍</label>
+      <label class="tool" for="pick"><svg class="i"><use href="#i-img"/></svg>選相片</label>
+    </div>
+    <div class="bar">
+      <button class="btn" type="button" id="ed-cancel" hidden><svg class="i"><use href="#i-back"/></svg>取消</button>
+      <button class="btn pri grow" type="button" id="go">轉正<svg class="i"><use href="#i-next"/></svg></button>
+    </div>
+  </section>
 
-  <div class="wrap" id="done" hidden>
-    <div class="pv"><img id="out" alt="轉正後的文件"></div>
-    <div class="side">
-      <div class="grp"><h3>效果</h3>
-        <div class="chips" id="filters">
-          <button class="chip" type="button" data-f="enh" aria-pressed="true">掃描增強</button>
-          <button class="chip" type="button" data-f="orig" aria-pressed="false">原色</button>
-          <button class="chip" type="button" data-f="gray" aria-pressed="false">灰階</button>
-          <button class="chip" type="button" data-f="bw" aria-pressed="false">黑白</button>
-        </div></div>
-      <div class="grp"><h3>比例</h3>
-        <div class="chips" id="ratios">
-          <button class="chip" type="button" data-r="auto" aria-pressed="true">自動</button>
-          <button class="chip" type="button" data-r="a4" aria-pressed="false">A4 文件</button>
-          <button class="chip" type="button" data-r="card" aria-pressed="false">證件／名片</button>
-        </div></div>
-      <div class="grp"><h3>方向</h3>
-        <div class="row">
-          <button class="btn" id="rl" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4v6h6"/><path d="M4.5 10A8 8 0 1 1 6 16.5"/></svg>左轉</button>
-          <button class="btn" id="rr" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 4v6h-6"/><path d="M19.5 10A8 8 0 1 0 18 16.5"/></svg>右轉</button>
-        </div></div>
-      <div class="row">
-        <button class="btn pri" id="savejpg" type="button">存成圖片</button>
-        <button class="btn" id="addpage" type="button">加入 PDF 頁面</button>
+  <section class="view" id="v-result" aria-label="效果" hidden>
+    <div class="rv">
+      <div class="stage">
+        <canvas id="pv" aria-label="轉正後的預覽，按住可比較原圖"></canvas>
+        <p class="pill" id="cmp">按住預覽圖可比較原圖</p>
       </div>
-      <p class="hint">iPhone 按「存成圖片」後選「儲存影像」就會存進相簿；PDF 選「儲存到檔案」或直接傳 LINE。</p>
-      <button class="btn pri" id="next" type="button" hidden>下一張照片</button>
-      <button class="btn" id="back" type="button">← 回去調整四個角</button>
+      <div class="panel">
+        <div class="seg" role="group" aria-label="設定"><button type="button" data-tab="filter" aria-pressed="true">濾鏡</button><button type="button" data-tab="adj" aria-pressed="false">調整</button></div>
+        <div class="fl" id="filters"></div>
+        <div class="adj" id="adj" hidden>
+          <div class="ar"><span>比例</span>
+            <button class="chip" type="button" data-r="auto" aria-pressed="true">自動</button>
+            <button class="chip" type="button" data-r="a4" aria-pressed="false">A4 文件</button>
+            <button class="chip" type="button" data-r="card" aria-pressed="false">證件／名片</button></div>
+          <div class="ar"><span>方向</span>
+            <button class="ib" type="button" id="rl" aria-label="向左轉"><svg class="i"><use href="#i-rotl"/></svg></button>
+            <button class="ib" type="button" id="rr" aria-label="向右轉"><svg class="i"><use href="#i-rotr"/></svg></button></div>
+          <div class="ar"><span>亮度</span><div class="sl"><input type="range" id="br" min="-50" max="50" value="0" aria-label="亮度"><output id="brv">0</output></div></div>
+          <div class="ar"><span>對比</span><div class="sl"><input type="range" id="ct" min="-50" max="50" value="0" aria-label="對比"><output id="ctv">0</output></div></div>
+          <div><button class="link" type="button" id="reset">亮度與對比重設</button></div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div id="busy" hidden>處理中…</div>
-</section>
-
-<section class="band" id="pages" hidden>
-  <div class="wrap">
-    <h2>PDF 頁面（<span id="pcount">0</span> 頁）</h2>
-    <ul id="plist"></ul>
-    <div class="row">
-      <button class="btn pri" id="pdf" type="button">匯出 PDF</button>
-      <button class="btn" id="clear" type="button">清空頁面</button>
+    <div class="bar">
+      <button class="btn" type="button" id="back"><svg class="i"><use href="#i-back"/></svg>調整</button>
+      <button class="btn" type="button" id="save1"><svg class="i"><use href="#i-save"/></svg>存圖片</button>
+      <button class="btn pri grow" type="button" id="commit"><svg class="i"><use href="#i-check"/></svg><span id="commit-t">加入文件</span></button>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="band">
-  <div class="tips">
-    <div><h2>拍照小技巧</h2>
-      <ul>
-        <li>文件放在顏色比較深的桌面上，邊緣最好找。</li>
-        <li>四個角都要拍進畫面，留一點桌面在旁邊。</li>
-        <li>避開燈光反光和手機的影子，斜一點拍沒關係。</li>
-        <li>證件、名片選「證件／名片」，匯出 PDF 會用實際尺寸放在 A4 上方，方便列印影本。</li>
-      </ul></div>
-    <div><h2>隱私</h2>
-      <p>照片只在你的手機或電腦瀏覽器裡處理，不會上傳到任何地方。關掉頁面後，照片和頁面就會清除。</p></div>
-  </div>
-</section>
-<div id="toast" role="status" aria-live="polite" hidden></div>
+  <section class="view" id="v-doc" aria-label="文件" hidden>
+    <div class="dbody">
+      <div class="dhead" id="dhead">
+        <label class="fld g">PDF 檔名<input id="fname" type="text" autocomplete="off" placeholder="掃描文件"></label>
+        <label class="fld">頁面大小<select id="psize"><option value="a4">A4 紙張</option><option value="fit">照原圖比例</option></select></label>
+        <button class="link" type="button" id="clear">全部清除</button>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty">
+        <svg viewBox="0 0 132 110" aria-hidden="true"><rect x="30" y="14" width="62" height="82" rx="4" fill="#22262a" transform="rotate(-8 61 55)"/><rect x="40" y="10" width="62" height="82" rx="4" fill="#fbfaf6"/><path d="M50 30h40M50 40h40M50 50h30M50 60h40M50 70h24" stroke="#9aa3aa" stroke-width="4" stroke-linecap="round"/><circle cx="104" cy="88" r="16" fill="#ff5b2e"/><path d="M104 81v14M97 88h14" stroke="#1f0c05" stroke-width="3.4" stroke-linecap="round"/></svg>
+        <h2>還沒有頁面</h2>
+        <p>拍下文件或一次選好幾張相片，每張會自動轉正，排好順序後就能合併成一份 PDF。</p>
+        <div class="row"><label class="btn pri" for="cam"><svg class="i"><use href="#i-cam"/></svg>拍照</label><label class="btn" for="pick"><svg class="i"><use href="#i-img"/></svg>選相片</label></div>
+      </div>
+    </div>
+    <div class="bar">
+      <button class="btn" type="button" id="saveall"><svg class="i"><use href="#i-save"/></svg>存成圖片</button>
+      <button class="btn pri grow" type="button" id="pdf"><svg class="i"><use href="#i-pdf"/></svg>匯出 PDF</button>
+    </div>
+  </section>
+</main>
+
+<div id="toast" role="status" aria-live="polite" hidden><span id="toast-t"></span><button type="button" id="toast-b" hidden></button></div>
+<div id="busy" hidden><div><span id="busy-t">處理中…</span><div class="prog"><i id="busy-p"></i></div></div></div>
 
 <script>
+/* ---------- document detection ---------- */
+const DET={};
 {
-const $=s=>document.querySelector(s);
-const cv=$('#cv'),ctx=cv.getContext('2d'),lp=$('#loupe'),lctx=lp.getContext('2d'),msg=$('#msg');
-const ACC='#ff5b2e',MAXS=3200,MAXO=2400;
-let src=null,quad=null,view={s:1,off:18},drag=-1,grab=null,start=null,queue=[];
-let warped=null,rot=0,filt='enh',ratio='auto',outBlob=null,outUrl='',outDim=[0,0],pages=[],clearArm=false,toastT=0;
-
-const canvasOf=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
-const tick=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,20)));
-const say=t=>{msg.textContent=t};
-function toast(t){const e=$('#toast');e.textContent=t;e.hidden=false;e.style.opacity=1;clearTimeout(toastT);toastT=setTimeout(()=>{e.style.opacity=0;setTimeout(()=>{e.hidden=true},300)},2600)}
-function busy(on){$('#busy').hidden=!on}
-
-/* ---------- image analysis ---------- */
-function blur(a,w,h,r){
+const blur=(a,w,h,r)=>{
   const t=new Float32Array(a.length),p=new Float32Array(Math.max(w,h)+1);
   for(let y=0;y<h;y++){const o=y*w;for(let x=0;x<w;x++)p[x+1]=p[x]+a[o+x];
     for(let x=0;x<w;x++){const l=Math.max(0,x-r),R=Math.min(w,x+r+1);t[o+x]=(p[R]-p[l])/(R-l)}}
   for(let x=0;x<w;x++){for(let y=0;y<h;y++)p[y+1]=p[y]+t[y*w+x];
-    for(let y=0;y<h;y++){const l=Math.max(0,y-r),R=Math.min(h,y+r+1);a[y*w+x]=(p[R]-p[l])/(R-l)}}
-}
-function otsu(a){
+    for(let y=0;y<h;y++){const l=Math.max(0,y-r),R=Math.min(h,y+r+1);a[y*w+x]=(p[R]-p[l])/(R-l)}}};
+const otsu=a=>{
   const H=new Float64Array(256);for(const v of a)H[v<0?0:v>255?255:v|0]++;
   const tot=a.length;let sum=0;for(let i=0;i<256;i++)sum+=i*H[i];
   let sb=0,wb=0,best=-1,t=128;
   for(let i=0;i<256;i++){wb+=H[i];if(!wb)continue;const wf=tot-wb;if(!wf)break;sb+=i*H[i];
     const v=wb*wf*(sb/wb-(sum-sb)/wf)**2;if(v>best){best=v;t=i}}
-  return t+.5}
-function thr(a,t,inv){const m=new Uint8Array(a.length);for(let i=0;i<a.length;i++)m[i]=((a[i]>t)!==inv)?1:0;return m}
-function morph(m,w,h,r,er){
+  return t+.5};
+const pct=(a,q)=>{const H=new Float64Array(256);for(const v of a)H[v<0?0:v>255?255:v|0]++;let c=0,n=a.length*q;for(let i=0;i<256;i++){c+=H[i];if(c>=n)return i}return 255};
+const thr=(a,t,inv)=>{const m=new Uint8Array(a.length);for(let i=0;i<a.length;i++)m[i]=((a[i]>t)!==inv)?1:0;return m};
+const morph=(m,w,h,r,er)=>{
   const t=new Uint8Array(m.length),o=new Uint8Array(m.length),p=new Int32Array(Math.max(w,h)+1);
   for(let y=0;y<h;y++){const b=y*w;for(let x=0;x<w;x++)p[x+1]=p[x]+m[b+x];
     for(let x=0;x<w;x++){const l=Math.max(0,x-r),R=Math.min(w,x+r+1),s=p[R]-p[l];t[b+x]=er?(s===R-l?1:0):(s>0?1:0)}}
   for(let x=0;x<w;x++){for(let y=0;y<h;y++)p[y+1]=p[y]+t[y*w+x];
     for(let y=0;y<h;y++){const l=Math.max(0,y-r),R=Math.min(h,y+r+1),s=p[R]-p[l];o[y*w+x]=er?(s===R-l?1:0):(s>0?1:0)}}
-  return o}
+  return o};
 const open=(m,w,h,r)=>morph(morph(m,w,h,r,1),w,h,r,0);
-function edgeMask(g,w,h){
-  const n=w*h,mag=new Float32Array(n);
+const sobel=(g,w,h)=>{
+  const gx=new Float32Array(w*h),gy=new Float32Array(w*h),mag=new Float32Array(w*h);
   for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=y*w+x;
-    const gx=g[i-w+1]+2*g[i+1]+g[i+w+1]-g[i-w-1]-2*g[i-1]-g[i+w-1];
-    const gy=g[i+w-1]+2*g[i+w]+g[i+w+1]-g[i-w-1]-2*g[i-w]-g[i-w+1];
-    mag[i]=Math.min(255,Math.hypot(gx,gy)/4)}
-  const e=morph(thr(mag,Math.max(otsu(mag),12),false),w,h,2,0);
-  const out=new Uint8Array(n),st=new Int32Array(n);let sp=0;
+    const a=g[i-w+1]+2*g[i+1]+g[i+w+1]-g[i-w-1]-2*g[i-1]-g[i+w-1];
+    const b=g[i+w-1]+2*g[i+w]+g[i+w+1]-g[i-w-1]-2*g[i-w]-g[i-w+1];
+    gx[i]=a/8;gy[i]=b/8;mag[i]=Math.min(255,Math.hypot(a,b)/4)}
+  return{gx,gy,mag}};
+const fillHoles=(e,w,h)=>{
+  const n=w*h,out=new Uint8Array(n),st=new Int32Array(n);let sp=0;
   const push=i=>{if(!e[i]&&!out[i]){out[i]=1;st[sp++]=i}};
   for(let x=0;x<w;x++){push(x);push((h-1)*w+x)}for(let y=0;y<h;y++){push(y*w);push(y*w+w-1)}
   while(sp){const i=st[--sp],x=i%w;if(x>0)push(i-1);if(x<w-1)push(i+1);if(i>=w)push(i-w);if(i<n-w)push(i+w)}
-  const m=new Uint8Array(n);for(let i=0;i<n;i++)m[i]=out[i]?0:1;
-  return morph(m,w,h,2,1)}
-function comps(m,w,h){
+  const m=new Uint8Array(n);for(let i=0;i<n;i++)m[i]=out[i]?0:1;return m};
+const edgeMask=(mag,w,h)=>morph(fillHoles(morph(thr(mag,Math.max(otsu(mag),10),false),w,h,2,0),w,h),w,h,2,1);
+const bgMask=(d,w,h)=>{
+  const b=Math.max(2,Math.round(Math.min(w,h)*.03)),P=[];
+  for(let y=0;y<h;y+=2)for(let x=0;x<w;x+=2){if(x>=b&&x<w-b&&y>=b&&y<h-b)continue;const j=(y*w+x)*4;P.push([d[j],d[j+1],d[j+2]])}
+  const lum=p=>p[0]*.3+p[1]*.59+p[2]*.11;let c=[P.reduce((a,p)=>lum(p)<lum(a)?p:a),P.reduce((a,p)=>lum(p)>lum(a)?p:a)].map(p=>p.slice()),cnt=[0,0];
+  for(let it=0;it<8;it++){const s=[[0,0,0],[0,0,0]];cnt=[0,0];
+    for(const p of P){const k=((p[0]-c[0][0])**2+(p[1]-c[0][1])**2+(p[2]-c[0][2])**2)<=((p[0]-c[1][0])**2+(p[1]-c[1][1])**2+(p[2]-c[1][2])**2)?0:1;cnt[k]++;s[k][0]+=p[0];s[k][1]+=p[1];s[k][2]+=p[2]}
+    for(let k=0;k<2;k++)if(cnt[k])c[k]=s[k].map(v=>v/cnt[k])}
+  const C=c.filter((_,k)=>cnt[k]>P.length*.2),n=w*h,dist=new Float32Array(n);
+  for(let i=0,j=0;i<n;i++,j+=4){let m=1e9;for(const q of C){const v=Math.hypot(d[j]-q[0],d[j+1]-q[1],d[j+2]-q[2]);if(v<m)m=v}dist[i]=Math.min(255,m*1.2)}
+  blur(dist,w,h,2);
+  const bd=[];for(let y=0;y<h;y+=2)for(let x=0;x<w;x+=2){if(x>=b&&x<w-b&&y>=b&&y<h-b)continue;bd.push(dist[y*w+x])}
+  bd.sort((p,q)=>p-q);const med=bd[bd.length>>1],mad=bd.map(v=>Math.abs(v-med)).sort((p,q)=>p-q)[bd.length>>1];
+  return open(thr(dist,Math.max(10,med+6*mad+6),false),w,h,2)};
+const comps=(m,w,h)=>{
   const n=w*h,lab=new Int32Array(n),st=new Int32Array(n),areas=[0];let L=0;
   for(let s=0;s<n;s++){if(!m[s]||lab[s])continue;L++;let sp=0,a=0;st[sp++]=s;lab[s]=L;
     while(sp){const i=st[--sp];a++;const x=i%w;
@@ -216,19 +279,19 @@ function comps(m,w,h){
       if(i>=w&&m[i-w]&&!lab[i-w]){lab[i-w]=L;st[sp++]=i-w}
       if(i<n-w&&m[i+w]&&!lab[i+w]){lab[i+w]=L;st[sp++]=i+w}}
     areas.push(a)}
-  const top=[];for(let l=1;l<=L;l++)if(areas[l]>n*.04)top.push(l);
-  top.sort((a,b)=>areas[b]-areas[a]);top.length=Math.min(top.length,3);
+  const top=[];for(let l=1;l<=L;l++)if(areas[l]>n*.025)top.push(l);
+  top.sort((a,b)=>areas[b]-areas[a]);top.length=Math.min(top.length,4);
   return top.map(l=>{const pts=[];let x0=w,x1=-1,y0=h,y1=-1;
     for(let y=0;y<h;y++){let a=-1,b=-1;const o=y*w;for(let x=0;x<w;x++)if(lab[o+x]===l){if(a<0)a=x;b=x}
       if(a>=0){pts.push([a,y],[b+1,y],[a,y+1],[b+1,y+1]);if(a<x0)x0=a;if(b>x1)x1=b;if(y<y0)y0=y;y1=y}}
-    return{area:areas[l],pts,box:[x0,y0,x1,y1]}})}
-function hull(P){
+    return{area:areas[l],pts,box:[x0,y0,x1,y1]}})};
+const hull=P=>{
   P=P.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
   const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]),lo=[],up=[];
   for(const p of P){while(lo.length>1&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}
   for(let i=P.length-1;i>=0;i--){const p=P[i];while(up.length>1&&cr(up[up.length-2],up[up.length-1],p)<=0)up.pop();up.push(p)}
-  lo.pop();up.pop();return lo.concat(up)}
-function maxQuad(H){
+  lo.pop();up.pop();return lo.concat(up)};
+const maxQuad=H=>{
   const n=H.length,tri=(a,b,c)=>Math.abs((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]));
   const am=f=>{let bi=0,bv=-Infinity;H.forEach((p,i)=>{const v=f(p);if(v>bv){bv=v;bi=i}});return bi};
   let id=[...new Set([am(p=>-p[0]-p[1]),am(p=>p[0]-p[1]),am(p=>p[0]+p[1]),am(p=>p[1]-p[0])])].sort((a,b)=>a-b);
@@ -240,41 +303,220 @@ function maxQuad(H){
       for(let j=(a+1)%n;j!==b;j=(j+1)%n){const v=tri(H[a],H[j],H[b]);if(v>bv+1e-9){bv=v;bj=j}}
       if(bj!==id[k]){id[k]=bj;ch=true}}
     if(!ch)break}
-  return id.map(i=>H[i])}
-const polyArea=q=>Math.abs(q.reduce((s,p,i)=>{const r=q[(i+1)%q.length];return s+p[0]*r[1]-r[0]*p[1]},0))/2;
-function order(q){
+  return id.map(i=>H[i])};
+const area=q=>Math.abs(q.reduce((s,p,i)=>{const r=q[(i+1)%q.length];return s+p[0]*r[1]-r[0]*p[1]},0))/2;
+const order=q=>{
   const cx=q.reduce((s,p)=>s+p[0],0)/4,cy=q.reduce((s,p)=>s+p[1],0)/4;
   const s=q.slice().sort((a,b)=>Math.atan2(a[1]-cy,a[0]-cx)-Math.atan2(b[1]-cy,b[0]-cx));
   let k=0;s.forEach((p,i)=>{if(p[0]+p[1]<s[k][0]+s[k][1])k=i});
-  return s.slice(k).concat(s.slice(0,k)).map(p=>p.slice())}
-function quadOf(c,w,h){
-  const H=hull(c.pts);if(H.length<4)return null;
-  const q=maxQuad(H),qa=polyArea(q);if(qa<w*h*.08)return null;
-  const fill=Math.min(1,c.area/qa);if(fill<.8)return null;
-  const[x0,y0,x1,y1]=c.box,touch=(x0<=1)+(y0<=1)+(x1>=w-2)+(y1>=h-2);
-  return{q:order(q),score:qa*fill**4*(touch>=3?.25:touch===2?.7:1)*(qa>w*h*.97?.3:1)}}
-function detectQuad(d,w,h){
+  return s.slice(k).concat(s.slice(0,k)).map(p=>p.slice())};
+const convex=q=>{let sg=0;for(let i=0;i<4;i++){const a=q[i],b=q[(i+1)%4],c=q[(i+2)%4],z=(b[0]-a[0])*(c[1]-b[1])-(b[1]-a[1])*(c[0]-b[0]);if(Math.abs(z)<1e-6)return false;const s=Math.sign(z);if(sg&&s!==sg)return false;sg=s}return true};
+const samp=(a,w,h,x,y)=>{if(x<0||y<0||x>w-2||y>h-2)return 0;const x0=x|0,y0=y|0,fx=x-x0,fy=y-y0,i=y0*w+x0;return(a[i]*(1-fx)+a[i+1]*fx)*(1-fy)+(a[i+w]*(1-fx)+a[i+w+1]*fx)*fy};
+const support=(q,mag,w,h,T)=>{
+  let tot=0,mn=1;
+  for(let k=0;k<4;k++){const a=q[k],b=q[(k+1)%4],ex=b[0]-a[0],ey=b[1]-a[1],L=Math.hypot(ex,ey)||1,nx=-ey/L,ny=ex/L;let s=0,c=0;
+    for(let j=0;j<24;j++){const t=.06+.88*j/23,x=a[0]+ex*t,y=a[1]+ey*t;
+      if(x<3||y<3||x>w-4||y>h-4){s+=.6;c++;continue}
+      let m=0;for(let o=-2;o<=2;o++)m=Math.max(m,samp(mag,w,h,x+nx*o,y+ny*o));s+=Math.min(1,m/T);c++}
+    const e=s/c;tot+=e;mn=Math.min(mn,e)}
+  return .55*tot/4+.45*mn};
+const fitLine=P=>{
+  const n=P.length;if(n<4)return null;let best=null,bc=-1;
+  for(let i=0;i<n;i++)for(let j=i+Math.max(2,n>>2);j<n;j++){
+    const dx=P[j][0]-P[i][0],dy=P[j][1]-P[i][1],L=Math.hypot(dx,dy);if(L<1e-6)continue;const ux=dx/L,uy=dy/L;let c=0;
+    for(const p of P)if(Math.abs((p[0]-P[i][0])*uy-(p[1]-P[i][1])*ux)<=1.3)c++;
+    if(c>bc){bc=c;best=[P[i],ux,uy]}}
+  if(!best)return null;const pts=P.filter(p=>Math.abs((p[0]-best[0][0])*best[2]-(p[1]-best[0][1])*best[1])<=1.6);
+  const m=pts.length;if(m<4)return null;let mx=0,my=0;for(const p of pts){mx+=p[0];my+=p[1]}mx/=m;my/=m;
+  let sxx=0,syy=0,sxy=0;for(const p of pts){const ex=p[0]-mx,ey=p[1]-my;sxx+=ex*ex;syy+=ey*ey;sxy+=ex*ey}
+  const th=.5*Math.atan2(2*sxy,sxx-syy);return{p:[mx,my],d:[Math.cos(th),Math.sin(th)],n:m}};
+const meet=(A,B)=>{const c=A.d[0]*B.d[1]-A.d[1]*B.d[0];if(Math.abs(c)<1e-6)return null;
+  const t=((B.p[0]-A.p[0])*B.d[1]-(B.p[1]-A.p[1])*B.d[0])/c;return[A.p[0]+A.d[0]*t,A.p[1]+A.d[1]*t]};
+
+DET.refine=(src,q,frac,posOnly)=>{
+  const k=Math.min(1,1280/Math.max(src.width,src.height)),w=Math.max(8,Math.round(src.width*k)),h=Math.max(8,Math.round(src.height*k));
+  const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(src,0,0,w,h);
+  const d=x.getImageData(0,0,w,h).data,g=new Float32Array(w*h);for(let i=0,j=0;i<w*h;i++,j+=4)g[i]=.299*d[j]+.587*d[j+1]+.114*d[j+2];
+  c.width=c.height=0;blur(g,w,h,1);const{gx,gy}=sobel(g,w,h);
+  const qs=q.map(p=>[p[0]*k,p[1]*k]),cx=qs.reduce((s,p)=>s+p[0],0)/4,cy=qs.reduce((s,p)=>s+p[1],0)/4;
+  const R=Math.max(5,Math.round(Math.hypot(w,h)*(frac||.014))),K=48,lines=[];
+  for(let i=0;i<4;i++){
+    const a=qs[i],b=qs[(i+1)%4],ex=b[0]-a[0],ey=b[1]-a[1],L=Math.hypot(ex,ey);if(L<24){lines.push(null);continue}
+    let nx=-ey/L,ny=ex/L;if((cx-a[0])*nx+(cy-a[1])*ny<0){nx=-nx;ny=-ny}
+    const cand=[];
+    for(let j=0;j<K;j++){const t=.08+.84*j/(K-1),px=a[0]+ex*t,py=a[1]+ey*t;let bs=0,bv=0,bsc=0;
+      for(let s=-R;s<=R;s+=.5){const X=px+nx*s,Y=py+ny*s;if(X<2||Y<2||X>w-3||Y>h-3)continue;
+        const v=samp(gx,w,h,X,Y)*nx+samp(gy,w,h,X,Y)*ny,sc=(posOnly?v:Math.abs(v))*(1-.35*Math.abs(s)/R);if(sc>bsc){bsc=sc;bv=v;bs=s}}
+      if(Math.abs(bv)>=3)cand.push([px+nx*bs,py+ny*bs,Math.sign(bv)])}
+    const pos=cand.filter(p=>p[2]>0).length,sg=pos>=cand.length-pos?1:-1,pts=cand.filter(p=>p[2]===sg);
+    const ln=pts.length>=K*.3?fitLine(pts):null;lines.push(ln&&ln.n>=K*.25?ln:null)}
+  const out=qs.map((p,i)=>{const A=lines[(i+3)%4],B=lines[i];if(!A||!B)return p;const m=meet(A,B);
+    return m&&Math.hypot(m[0]-p[0],m[1]-p[1])<2.5*R?m:p});
+  return convex(out)?out.map(p=>[p[0]/k,p[1]/k]):q};
+
+DET.find=src=>{
+  const k=Math.min(1,640/Math.max(src.width,src.height)),w=Math.max(8,Math.round(src.width*k)),h=Math.max(8,Math.round(src.height*k));
+  const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(src,0,0,w,h);
+  const d=x.getImageData(0,0,w,h).data;c.width=c.height=0;
   const n=w*h,g=new Float32Array(n),sc=new Float32Array(n);
   for(let i=0,j=0;i<n;i++,j+=4){const r=d[j],gg=d[j+1],b=d[j+2],y=.299*r+.587*gg+.114*b;g[i]=y;sc[i]=y-.9*(Math.max(r,gg,b)-Math.min(r,gg,b))}
   blur(g,w,h,2);blur(g,w,h,2);blur(sc,w,h,2);blur(sc,w,h,2);
-  const tg=otsu(g),ts=otsu(sc);
-  const masks=[open(thr(sc,ts,false),w,h,2),open(thr(g,tg,false),w,h,2),open(thr(g,tg,true),w,h,2),edgeMask(g,w,h)];
+  const{mag}=sobel(g,w,h),T=Math.max(8,pct(mag,.85)),tg=otsu(g),ts=otsu(sc);
+  const bb=Math.max(2,Math.round(Math.min(w,h)*.03)),bl=[];for(let y=0;y<h;y+=2)for(let x=0;x<w;x+=2){if(x>=bb&&x<w-bb&&y>=bb&&y<h-bb)continue;bl.push(g[y*w+x])}
+  bl.sort((p,q)=>p-q);const bmed=bl[bl.length>>1],bmad=bl.map(v=>Math.abs(v-bmed)).sort((p,q)=>p-q)[bl.length>>1];
+  const masks=[open(thr(sc,ts,false),w,h,2),open(thr(g,tg,false),w,h,2),open(thr(g,tg,true),w,h,2),edgeMask(mag,w,h),bgMask(d,w,h),open(thr(g,bmed+Math.max(8,5*bmad+4),false),w,h,2)];
   let best=null;
-  for(const m of masks)for(const c of comps(m,w,h)){const r=quadOf(c,w,h);if(r&&(!best||r.score>best.score))best=r}
-  return best?best.q:null}
-
-/* ---------- geometry ---------- */
-function homog(s,d){
+  for(const m of masks)for(const cp of comps(m,w,h)){
+    const H=hull(cp.pts);if(H.length<4)continue;const q=maxQuad(H),qa=area(q);if(qa<n*.025)continue;
+    const fill=Math.min(1,cp.area/qa);if(fill<.78)continue;
+    const[x0,y0,x1,y1]=cp.box,touch=(x0<=1)+(y0<=1)+(x1>=w-2)+(y1>=h-2),sup=support(q,mag,w,h,T);
+    const score=(qa/n)**.6*fill**4*(.2+.8*sup)*(touch>=3?.3:touch===2?.75:1)*(qa>n*.96?.3:1);
+    if(!best||score>best.score)best={q:order(q),score,sup}}
+  if(!best||best.sup<.18)return null;
+  let q=best.q.map(p=>[p[0]/k,p[1]/k]);
+  try{q=DET.refine(src,q,.035,true);q=DET.refine(src,q,.012)}catch(e){}
+  const cx=q.reduce((s,p)=>s+p[0],0)/4,cy=q.reduce((s,p)=>s+p[1],0)/4,ins=Math.hypot(src.width,src.height)*.0015;
+  return q.map(([a,b])=>{const dx=cx-a,dy=cy-b,L=Math.hypot(dx,dy)||1;return[a+dx/L*ins,b+dy/L*ins]})};
+DET.homog=(s,d)=>{
   const A=[],b=[];
   for(let i=0;i<4;i++){const[x,y]=s[i],[u,v]=d[i];
     A.push([x,y,1,0,0,0,-u*x,-u*y]);b.push(u);A.push([0,0,0,x,y,1,-v*x,-v*y]);b.push(v)}
   for(let c=0;c<8;c++){let p=c;for(let r=c+1;r<8;r++)if(Math.abs(A[r][c])>Math.abs(A[p][c]))p=r;
     const tA=A[c];A[c]=A[p];A[p]=tA;const tb=b[c];b[c]=b[p];b[p]=tb;
     for(let r=0;r<8;r++){if(r===c)continue;const f=A[r][c]/A[c][c];if(!f)continue;for(let k=c;k<8;k++)A[r][k]-=f*A[c][k];b[r]-=f*b[c]}}
-  return b.map((v,i)=>v/A[i][i]).concat(1)}
+  return b.map((v,i)=>v/A[i][i]).concat(1)};
+}
+</script>
+<script>
+{
+const $=s=>document.querySelector(s);
+const ACC='#ff5b2e',MAXS=3200,MAXO=2200;
+const FILTERS=[['enh','掃描增強'],['vivid','鮮明彩色'],['orig','原色'],['gray','灰階'],['bw','黑白']];
+const touch=matchMedia('(pointer:coarse)').matches;
+let cur=null,pages=[],drag=-1,grab=null,start=null,view={s:1,off:22},toastT=0,clearArm=false,dl=null,pvq=0;
+const cnv=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
+const free=c=>{if(c){c.width=0;c.height=0}};
+const tick=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,16)));
+const today=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}`};
+const blobOf=(c,q)=>new Promise(r=>c.toBlob(r,'image/jpeg',q));
+const I=n=>`<svg class="i"><use href="#i-${n}"/></svg>`;
+
+function toast(t,act){
+  const e=$('#toast'),b=$('#toast-b');$('#toast-t').textContent=t;b.hidden=!act;
+  if(act){b.textContent=act.label;b.onclick=()=>{e.hidden=true;act.fn()}}
+  e.hidden=false;e.style.opacity=1;clearTimeout(toastT);
+  toastT=setTimeout(()=>{e.style.opacity=0;setTimeout(()=>{e.hidden=true},220)},act?5200:2800)}
+function busy(on,t,f){$('#busy').hidden=!on;if(t)$('#busy-t').textContent=t;$('#busy-p').parentNode.hidden=f==null;$('#busy-p').style.width=((f||0)*100)+'%'}
+
+function show(v){
+  for(const id of['edit','result','doc'])$('#v-'+id).hidden=id!==v;
+  if(cur&&v!=='doc')cur.stage=v;
+  $('#nav-edit').setAttribute('aria-current',v!=='doc');$('#nav-doc').setAttribute('aria-current',v==='doc');$('#nav-edit').disabled=!cur;
+  if(v==='edit')requestAnimationFrame(layout)}
+
+/* ---------- loading ---------- */
+async function decode(file){
+  const u=URL.createObjectURL(file);
+  try{const im=new Image();im.src=u;await im.decode();
+    const k=Math.min(1,MAXS/Math.max(im.naturalWidth,im.naturalHeight)),c=cnv(Math.round(im.naturalWidth*k),Math.round(im.naturalHeight*k));
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);return c}
+  finally{URL.revokeObjectURL(u)}}
+function dropCur(){if(!cur)return;free(cur.src);free(cur.warped);free(cur.pbase);free(cur.tbase);cur=null}
+function newCur(file,src,idx){return{file,src,idx,rot:0,filt:'enh',autoF:true,ratio:'auto',br:0,ct:0,warped:null,pbase:null,tbase:null,bg:null,found:true,stage:'edit'}}
+function autoDetect(full){
+  let q=null;try{q=DET.find(cur.src)}catch(e){q=null}
+  const W=cur.src.width,H=cur.src.height,m=full?0:.06;cur.found=!!q;
+  cur.quad=q||[[W*m,H*m],[W*(1-m),H*m],[W*(1-m),H*(1-m)],[W*m,H*(1-m)]]}
+async function openFile(file,idx=-1,sample=false){
+  busy(true,'讀取照片…');await tick();let src;
+  try{src=await decode(file)}catch(e){busy(false);toast('這個檔案讀不到，請換一張 JPG 或 PNG 照片。');return}
+  dropCur();cur=newCur(file,src,idx);cur.sample=sample;
+  if(idx>=0){const p=pages[idx];Object.assign(cur,{autoF:false,rot:p.rot,filt:p.filt,ratio:p.ratio,br:p.br,ct:p.ct,found:!p.flagged});cur.quad=p.qn.map(([a,b])=>[a*src.width,b*src.height])}
+  else autoDetect(false);
+  busy(false);$('#ed-cancel').hidden=idx<0;hint();show('edit')}
+function hint(){
+  const t=cur.found?'拖橘點調四角，拖白條移動整條邊':'沒找到邊緣，請把橘點拖到文件四角';
+  $('#hint').textContent=(cur.sample?'範例照片 · ':'')+t}
+async function takeFiles(list){
+  const fs=[...list].filter(f=>!f.type||f.type.startsWith('image/'));if(!fs.length)return;
+  if(fs.length===1)return openFile(fs[0]);
+  let bad=0,fl=0,n=0;
+  for(let i=0;i<fs.length;i++){
+    busy(true,`自動轉正第 ${i+1}／${fs.length} 張…`,i/fs.length);await tick();let src;
+    try{src=await decode(fs[i])}catch(e){bad++;continue}
+    dropCur();cur=newCur(fs[i],src,-1);autoDetect(true);
+    try{await buildWarp(false);pickFilter();pages.push(await pageFromCur());n++;if(!cur.found){pages[pages.length-1].flagged=true;fl++}}catch(e){bad++}
+    dropCur()}
+  busy(false);renderDoc();show('doc');
+  toast(`已加入 ${n} 頁`+(fl?`，其中 ${fl} 頁沒抓到邊，請點開檢查`:'')+(bad?`，${bad} 張讀不到`:''))}
+
+/* ---------- editor ---------- */
+function layout(){
+  if(!cur||$('#v-edit').hidden)return;
+  const st=$('#ed-stage'),off=22,s=Math.min((st.clientWidth-2*off)/cur.src.width,(st.clientHeight-2*off-34)/cur.src.height);
+  if(!(s>0))return;view={s,off};
+  const W=Math.round(cur.src.width*s+2*off),H=Math.round(cur.src.height*s+2*off),r=devicePixelRatio||1,cv=$('#cv');
+  cv.style.width=W+'px';cv.style.height=H+'px';cv.width=Math.round(W*r);cv.height=Math.round(H*r);
+  cv.style.marginBottom='34px';draw()}
+const toV=p=>[p[0]*view.s+view.off,p[1]*view.s+view.off];
+function path(c,p){c.beginPath();c.moveTo(p[0][0],p[0][1]);for(let i=1;i<4;i++)c.lineTo(p[i][0],p[i][1]);c.closePath()}
+function draw(){
+  if(!cur)return;const cv=$('#cv'),ctx=cv.getContext('2d');
+  const r=cv.width/parseFloat(cv.style.width),o=view.off,W=cur.src.width*view.s,H=cur.src.height*view.s,p=cur.quad.map(toV);
+  ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.setTransform(r,0,0,r,0,0);
+  ctx.save();ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=24;ctx.shadowOffsetY=8;ctx.fillStyle='#000';ctx.fillRect(o,o,W,H);ctx.restore();
+  ctx.drawImage(cur.src,o,o,W,H);
+  ctx.beginPath();ctx.rect(o,o,W,H);ctx.moveTo(p[0][0],p[0][1]);for(let i=1;i<4;i++)ctx.lineTo(p[i][0],p[i][1]);ctx.closePath();
+  ctx.fillStyle='rgba(6,7,8,.6)';ctx.fill('evenodd');
+  path(ctx,p);ctx.lineWidth=2;ctx.strokeStyle=ACC;ctx.stroke();
+  for(let k=0;k<4;k++){const a=p[k],b=p[(k+1)%4],an=Math.atan2(b[1]-a[1],b[0]-a[0]),on=drag===4+k;
+    ctx.save();ctx.translate((a[0]+b[0])/2,(a[1]+b[1])/2);ctx.rotate(an);ctx.beginPath();
+    (ctx.roundRect||ctx.rect).call(ctx,on?-20:-16,on?-6.5:-5.5,on?40:32,on?13:11,6.5);
+    ctx.fillStyle=on?ACC:'#fff';ctx.shadowColor='rgba(0,0,0,.45)';ctx.shadowBlur=6;ctx.fill();ctx.shadowBlur=0;ctx.lineWidth=2;ctx.strokeStyle=ACC;ctx.stroke();ctx.restore()}
+  p.forEach(([x,y],i)=>{ctx.beginPath();ctx.arc(x,y,drag===i?17:13,0,7);ctx.fillStyle='rgba(255,91,46,.28)';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=ACC;ctx.stroke();
+    ctx.beginPath();ctx.arc(x,y,3.4,0,7);ctx.fillStyle='#fff';ctx.fill()});
+  cv.dataset.quad=JSON.stringify(cur.quad.map(q=>q.map(Math.round)))}
+const focusPt=()=>{if(drag<4)return cur.quad[drag];const a=cur.quad[drag-4],b=cur.quad[(drag-3)%4];return[(a[0]+b[0])/2,(a[1]+b[1])/2]};
+function loupe(){
+  const lp=$('#loupe'),lc=lp.getContext('2d'),S=124,r=devicePixelRatio||1,cv=$('#cv');if(lp.width!==Math.round(S*r)){lp.width=lp.height=Math.round(S*r)}
+  lp.hidden=false;const fp=focusPt(),[cx,cy]=fp,cb=cv.getBoundingClientRect(),sb=$('#ed-stage').getBoundingClientRect(),vx=toV(fp)[0]+cb.left-sb.left,z=Math.max(2.5,3*view.s),rs=S/z,src=cur.src;
+  const left=vx>sb.width/2;lp.style.left=left?'12px':'auto';lp.style.right=left?'auto':'12px';
+  lc.setTransform(r,0,0,r,0,0);lc.fillStyle='#000';lc.fillRect(0,0,S,S);
+  const sx=Math.max(0,cx-rs/2),sy=Math.max(0,cy-rs/2),ex=Math.min(src.width,cx+rs/2),ey=Math.min(src.height,cy+rs/2);
+  if(ex>sx&&ey>sy)lc.drawImage(src,sx,sy,ex-sx,ey-sy,(sx-cx)*z+S/2,(sy-cy)*z+S/2,(ex-sx)*z,(ey-sy)*z);
+  path(lc,cur.quad.map(p=>[(p[0]-cx)*z+S/2,(p[1]-cy)*z+S/2]));lc.lineWidth=1.5;lc.strokeStyle=ACC;lc.stroke();
+  lc.strokeStyle='#fff';lc.lineWidth=1;lc.beginPath();lc.moveTo(S/2,S/2-12);lc.lineTo(S/2,S/2+12);lc.moveTo(S/2-12,S/2);lc.lineTo(S/2+12,S/2);lc.stroke()}
+{
+  const cv=$('#cv'),ptr=e=>{const b=cv.getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]};
+  cv.addEventListener('pointerdown',e=>{
+    if(!cur)return;const[x,y]=ptr(e),vq=cur.quad.map(toV);let bi=-1,bd=46;
+    vq.forEach(([a,b],i)=>{const d=Math.hypot(a-x,b-y);if(d<bd){bd=d;bi=i}});
+    if(bi<0){let ed=38;for(let k=0;k<4;k++){const a=vq[k],b=vq[(k+1)%4],d=Math.hypot((a[0]+b[0])/2-x,(a[1]+b[1])/2-y);if(d<ed){ed=d;bi=4+k}}}
+    if(bi<0)return;drag=bi;grab=[x,y];start=cur.quad.map(q=>q.slice());
+    try{cv.setPointerCapture(e.pointerId)}catch(_){}
+    e.preventDefault();draw();loupe()});
+  cv.addEventListener('pointermove',e=>{
+    if(drag<0)return;const[x,y]=ptr(e),src=cur.src,dx=(x-grab[0])/view.s,dy=(y-grab[1])/view.s;
+    const cl=q=>[Math.min(src.width,Math.max(0,q[0])),Math.min(src.height,Math.max(0,q[1]))];
+    if(drag<4)cur.quad[drag]=cl([start[drag][0]+dx,start[drag][1]+dy]);
+    else{const i=drag-4,j=(i+1)%4,a=start[i],b=start[j],ex=b[0]-a[0],ey=b[1]-a[1],L=Math.hypot(ex,ey)||1,nx=-ey/L,ny=ex/L,t=dx*nx+dy*ny;
+      cur.quad[i]=cl([a[0]+nx*t,a[1]+ny*t]);cur.quad[j]=cl([b[0]+nx*t,b[1]+ny*t])}
+    draw();loupe()});
+  const end=()=>{if(drag<0)return;drag=-1;$('#loupe').hidden=true;draw()};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  const ro=new ResizeObserver(()=>layout());ro.observe($('#ed-stage'));
+  const ro2=new ResizeObserver(()=>fitPv());ro2.observe($('#pv').parentNode);
+}
+
+/* ---------- warp & filters ---------- */
+function outSize(){
+  const[a,b,c,d]=cur.quad,L=(p,r)=>Math.hypot(p[0]-r[0],p[1]-r[1]);
+  let w=Math.max(L(a,b),L(d,c)),h=Math.max(L(a,d),L(b,c));
+  const R={a4:Math.SQRT2,card:85.6/54}[cur.ratio];if(R){if(w>=h)h=w/R;else w=h*R}
+  const k=Math.min(1,MAXO/Math.max(w,h));return[Math.max(16,Math.round(w*k)),Math.max(16,Math.round(h*k))]}
 function warp(sc,q,W,H){
   const sw=sc.width,sh=sc.height,sd=sc.getContext('2d').getImageData(0,0,sw,sh).data;
-  const m=homog([[0,0],[W,0],[W,H],[0,H]],q),out=new ImageData(W,H),od=out.data,mx=sw-1.001,my=sh-1.001;
+  const m=DET.homog([[0,0],[W,0],[W,H],[0,H]],q),out=new ImageData(W,H),od=out.data,mx=sw-1.001,my=sh-1.001;
   for(let v=0;v<H;v++){const vy=v+.5;
     for(let u=0;u<W;u++){const ux=u+.5,z=m[6]*ux+m[7]*vy+1;
       let x=(m[0]*ux+m[1]*vy+m[2])/z-.5,y=(m[3]*ux+m[4]*vy+m[5])/z-.5;
@@ -283,162 +525,125 @@ function warp(sc,q,W,H){
       for(let c=0;c<3;c++){const a=sd[i+c]+(sd[i+4+c]-sd[i+c])*fx,bb=sd[j+c]+(sd[j+4+c]-sd[j+c])*fx;od[o+c]=a+(bb-a)*fy}
       od[o+3]=255}}
   return out}
-function outSize(){
-  const[a,b,c,d]=quad,L=(p,r)=>Math.hypot(p[0]-r[0],p[1]-r[1]);
-  let w=Math.max(L(a,b),L(d,c)),h=Math.max(L(a,d),L(b,c));
-  const R={a4:Math.SQRT2,card:85.6/54}[ratio];
-  if(R){if(w>=h)h=w/R;else w=h*R}
-  const k=Math.min(1,MAXO/Math.max(w,h));
-  return[Math.max(16,Math.round(w*k)),Math.max(16,Math.round(h*k))]}
-
-/* ---------- filters ---------- */
+function scaled(c,m){const k=Math.min(1,m/Math.max(c.width,c.height)),o=cnv(Math.max(1,Math.round(c.width*k)),Math.max(1,Math.round(c.height*k))),x=o.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(c,0,0,o.width,o.height);return o}
+async function buildWarp(preview){
+  const[W,H]=outSize(),img=warp(cur.src,cur.quad,W,H);free(cur.warped);free(cur.pbase);free(cur.tbase);
+  cur.warped=cnv(W,H);cur.warped.getContext('2d').putImageData(img,0,0);cur.bg=null;
+  if(preview){cur.pbase=scaled(cur.warped,1400);cur.tbase=scaled(cur.warped,200)}}
+function pickFilter(){
+  if(!cur.autoF)return;cur.autoF=false;const t=scaled(cur.warped,64),d=t.getContext('2d',{willReadFrequently:true}).getImageData(0,0,t.width,t.height).data;let s=0,n=0;
+  for(let i=0;i<d.length;i+=4){const mx=Math.max(d[i],d[i+1],d[i+2]),mn=Math.min(d[i],d[i+1],d[i+2]);if(mx>70){s+=(mx-mn)/mx;n++}}
+  free(t);cur.filt=n&&s/n>.16?'vivid':'enh'}
+function rotated(base,rot){const w=base.width,h=base.height,sw=rot%2?h:w,sh=rot%2?w:h,c=cnv(sw,sh),x=c.getContext('2d');x.translate(sw/2,sh/2);x.rotate(rot*Math.PI/2);x.drawImage(base,-w/2,-h/2);return c}
 function bgOf(c){
   const w=c.width,h=c.height,sw=Math.max(4,Math.round(w/40)),sh=Math.max(4,Math.round(h/40));
-  const s=canvasOf(sw,sh),sx=s.getContext('2d');sx.imageSmoothingQuality='high';sx.drawImage(c,0,0,sw,sh);
+  const s=cnv(sw,sh),sx=s.getContext('2d',{willReadFrequently:true});sx.imageSmoothingQuality='high';sx.drawImage(c,0,0,sw,sh);
   const id=sx.getImageData(0,0,sw,sh),d=id.data,t=new Uint8ClampedArray(d);
   for(let y=0;y<sh;y++)for(let x=0;x<sw;x++){const o=(y*sw+x)*4;
     for(let k=0;k<3;k++){let m=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
       const yy=Math.min(sh-1,Math.max(0,y+dy)),xx=Math.min(sw-1,Math.max(0,x+dx)),v=t[(yy*sw+xx)*4+k];if(v>m)m=v}d[o+k]=m}}
   sx.putImageData(id,0,0);
-  const b=canvasOf(w,h),bx=b.getContext('2d');bx.imageSmoothingQuality='high';bx.drawImage(s,0,0,w,h);
-  return bx.getImageData(0,0,w,h).data}
-function applyFilter(d,b,f){
+  const b=cnv(w,h),bx=b.getContext('2d',{willReadFrequently:true});bx.imageSmoothingQuality='high';bx.drawImage(s,0,0,w,h);
+  const out=bx.getImageData(0,0,w,h).data;free(s);free(b);return out}
+function levels(d){const H=new Uint32Array(256);let n=0;for(let i=0;i<d.length;i+=16){H[(.299*d[i]+.587*d[i+1]+.114*d[i+2])|0]++;n++}
+  let c=0,lo=0,hi=255;for(let i=0;i<256;i++){c+=H[i];if(c>=n*.01){lo=i;break}}c=0;for(let i=255;i>=0;i--){c+=H[i];if(c>=n*.008){hi=i;break}}
+  return hi-lo<40?[0,255]:[lo,hi]}
+function applyFilter(d,b,f,br,ct){
+  const cf=1+ct/100,bo=br*1.4,lo=.6-br/220,wd=.22*(1-ct/130),lv=f==='vivid'?levels(d):null,ls=lv?255/(lv[1]-lv[0]):1;
   for(let i=0;i<d.length;i+=4){
-    if(f==='enh'){for(let k=0;k<3;k++)d[i+k]=(d[i+k]/Math.max(b[i+k],40)*255-28)*1.13}
-    else{const y=.299*d[i]+.587*d[i+1]+.114*d[i+2],by=Math.max(.299*b[i]+.587*b[i+1]+.114*b[i+2],40),r=y/by;let v;
-      if(f==='gray')v=(r*255-28)*1.13;else{const t=Math.min(1,Math.max(0,(r-.6)/.22));v=t*t*(3-2*t)*255}
-      d[i]=d[i+1]=d[i+2]=v}}}
+    let r=d[i],g=d[i+1],bl=d[i+2];
+    if(f==='bw'){const y=.299*r+.587*g+.114*bl,by=Math.max(.299*b[i]+.587*b[i+1]+.114*b[i+2],40),t=Math.min(1,Math.max(0,(y/by-lo)/wd));d[i]=d[i+1]=d[i+2]=t*t*(3-2*t)*255;continue}
+    if(f==='enh'){r=(r/Math.max(b[i],40)*255-28)*1.13;g=(g/Math.max(b[i+1],40)*255-28)*1.13;bl=(bl/Math.max(b[i+2],40)*255-28)*1.13}
+    else if(f==='vivid'){r=(r-lv[0])*ls;g=(g-lv[0])*ls;bl=(bl-lv[0])*ls;const y=.299*r+.587*g+.114*bl;r=y+(r-y)*1.3;g=y+(g-y)*1.3;bl=y+(bl-y)*1.3}
+    else if(f==='gray'){const y=.299*r+.587*g+.114*bl,by=Math.max(.299*b[i]+.587*b[i+1]+.114*b[i+2],40);r=g=bl=(y/by*255-28)*1.13}
+    d[i]=(r-128)*cf+128+bo;d[i+1]=(g-128)*cf+128+bo;d[i+2]=(bl-128)*cf+128+bo}}
+function finish(base,o,cache){
+  const c=rotated(base,o.rot);if(o.filt==='orig'&&!o.br&&!o.ct)return c;
+  const x=c.getContext('2d',{willReadFrequently:true}),id=x.getImageData(0,0,c.width,c.height);let bg=null;
+  if(o.filt!=='orig'&&o.filt!=='vivid'){const key=c.width+'x'+c.height;if(cache&&cur.bg&&cur.bg.key===key)bg=cur.bg.d;else{bg=bgOf(c);if(cache)cur.bg={key,d:bg}}}
+  applyFilter(id.data,bg,o.filt,o.br,o.ct);x.putImageData(id,0,0);return c}
 
-/* ---------- editor ---------- */
-function layout(){
-  if(!src||$('#edit').hidden)return;
-  const off=18,ed=$('#ed'),maxW=ed.clientWidth-2*off,maxH=Math.max(240,Math.min(innerHeight*.62,760))-2*off;
-  const s=Math.min(maxW/src.width,maxH/src.height);view={s,off};
-  const W=Math.round(src.width*s+2*off),H=Math.round(src.height*s+2*off),r=devicePixelRatio||1;
-  cv.style.width=W+'px';cv.style.height=H+'px';cv.width=Math.round(W*r);cv.height=Math.round(H*r);draw()}
-const toV=p=>[p[0]*view.s+view.off,p[1]*view.s+view.off];
-function path(c,p){c.beginPath();c.moveTo(p[0][0],p[0][1]);for(let i=1;i<4;i++)c.lineTo(p[i][0],p[i][1]);c.closePath()}
-function draw(){
-  if(!src)return;
-  const r=cv.width/parseFloat(cv.style.width),o=view.off,W=src.width*view.s,H=src.height*view.s,p=quad.map(toV);
-  ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.setTransform(r,0,0,r,0,0);
-  ctx.drawImage(src,o,o,W,H);
-  ctx.beginPath();ctx.rect(o,o,W,H);ctx.moveTo(p[0][0],p[0][1]);for(let i=1;i<4;i++)ctx.lineTo(p[i][0],p[i][1]);ctx.closePath();
-  ctx.fillStyle='rgba(8,10,12,.55)';ctx.fill('evenodd');
-  path(ctx,p);ctx.lineWidth=2;ctx.strokeStyle=ACC;ctx.stroke();
-  p.forEach(([x,y],i)=>{ctx.beginPath();ctx.arc(x,y,drag===i?16:12,0,7);ctx.fillStyle='rgba(255,91,46,.3)';ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=ACC;ctx.stroke();
-    ctx.beginPath();ctx.arc(x,y,3,0,7);ctx.fillStyle='#fff';ctx.fill()});
-  for(let k=0;k<4;k++){const a=p[k],b=p[(k+1)%4],mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,an=Math.atan2(b[1]-a[1],b[0]-a[0]),on=drag===4+k;
-    ctx.save();ctx.translate(mx,my);ctx.rotate(an);ctx.beginPath();(ctx.roundRect||ctx.rect).call(ctx,on?-19:-15,on?-6:-5,on?38:30,on?12:10,6);
-    ctx.fillStyle=on?ACC:'#fff';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=ACC;ctx.stroke();ctx.restore()}
-  cv.dataset.quad=JSON.stringify(quad.map(q=>q.map(Math.round)))}
-function loupe(){
-  const S=124,r=devicePixelRatio||1;if(lp.width!==Math.round(S*r)){lp.width=lp.height=Math.round(S*r)}
-  lp.hidden=false;const fp=focusPt(),[cx,cy]=fp,[vx]=toV(fp),z=Math.max(2.5,3*view.s),rs=S/z;
-  const left=vx>cv.clientWidth/2;lp.style.left=left?'10px':'auto';lp.style.right=left?'auto':'10px';
-  lctx.setTransform(r,0,0,r,0,0);lctx.fillStyle='#000';lctx.fillRect(0,0,S,S);
-  const sx=Math.max(0,cx-rs/2),sy=Math.max(0,cy-rs/2),ex=Math.min(src.width,cx+rs/2),ey=Math.min(src.height,cy+rs/2);
-  if(ex>sx&&ey>sy)lctx.drawImage(src,sx,sy,ex-sx,ey-sy,(sx-cx)*z+S/2,(sy-cy)*z+S/2,(ex-sx)*z,(ey-sy)*z);
-  path(lctx,quad.map(p=>[(p[0]-cx)*z+S/2,(p[1]-cy)*z+S/2]));lctx.lineWidth=1.5;lctx.strokeStyle=ACC;lctx.stroke();
-  lctx.strokeStyle='#fff';lctx.lineWidth=1;lctx.beginPath();lctx.moveTo(S/2,S/2-12);lctx.lineTo(S/2,S/2+12);lctx.moveTo(S/2-12,S/2);lctx.lineTo(S/2+12,S/2);lctx.stroke()}
-const focusPt=()=>{if(drag<4)return quad[drag];const a=quad[drag-4],b=quad[(drag-3)%4];return[(a[0]+b[0])/2,(a[1]+b[1])/2]};
-const ptr=e=>{const b=cv.getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]};
-cv.addEventListener('pointerdown',e=>{
-  if(!src)return;const[x,y]=ptr(e);let bi=-1,bd=46;
-  const vq=quad.map(toV);vq.forEach(([a,b],i)=>{const d=Math.hypot(a-x,b-y);if(d<bd){bd=d;bi=i}});
-  if(bi<0){let ed=36;for(let k=0;k<4;k++){const a=vq[k],b=vq[(k+1)%4],d=Math.hypot((a[0]+b[0])/2-x,(a[1]+b[1])/2-y);if(d<ed){ed=d;bi=4+k}}}
-  if(bi<0)return;drag=bi;grab=[x,y];start=quad.map(q=>q.slice());
-  try{cv.setPointerCapture(e.pointerId)}catch(_){}
-  e.preventDefault();draw();loupe()});
-cv.addEventListener('pointermove',e=>{
-  if(drag<0)return;const[x,y]=ptr(e);
-  const dx=(x-grab[0])/view.s,dy=(y-grab[1])/view.s,cl=(q)=>[Math.min(src.width,Math.max(0,q[0])),Math.min(src.height,Math.max(0,q[1]))];
-  if(drag<4)quad[drag]=cl([start[drag][0]+dx,start[drag][1]+dy]);
-  else{const i=drag-4,j=(i+1)%4,a=start[i],b=start[j],ex=b[0]-a[0],ey=b[1]-a[1],L=Math.hypot(ex,ey)||1,nx=-ey/L,ny=ex/L,t=dx*nx+dy*ny;
-    quad[i]=cl([a[0]+nx*t,a[1]+ny*t]);quad[j]=cl([b[0]+nx*t,b[1]+ny*t])}
-  draw();loupe()});
-const endDrag=()=>{if(drag<0)return;drag=-1;lp.hidden=true;draw()};
-cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',endDrag);
-const ro=new ResizeObserver(()=>layout());ro.observe($('#ed'));
-
-/* ---------- flow ---------- */
-function autoDetect(){
-  const k=Math.min(1,640/Math.max(src.width,src.height)),w=Math.max(8,Math.round(src.width*k)),h=Math.max(8,Math.round(src.height*k));
-  const c=canvasOf(w,h),x=c.getContext('2d',{willReadFrequently:true});x.drawImage(src,0,0,w,h);
-  let q=null;try{q=detectQuad(x.getImageData(0,0,w,h).data,w,h)}catch(_){q=null}
-  if(q){const cx=q.reduce((t,p)=>t+p[0],0)/4,cy=q.reduce((t,p)=>t+p[1],0)/4;
-    quad=q.map(([a,b])=>{const dx=cx-a,dy=cy-b,L=Math.hypot(dx,dy)||1,m=Math.min(3.5,L*.025);return[(a+dx/L*m)/k,(b+dy/L*m)/k]});say('已自動框出文件。拖曳橘色圓點調整四個角，拖曳邊上的白色短條可以整條邊一起移動，再按「轉正」。');return true}
-  const W=src.width,H=src.height,m=.08;
-  quad=[[W*m,H*m],[W*(1-m),H*m],[W*(1-m),H*(1-m)],[W*m,H*(1-m)]];
-  say('沒找到清楚的文件邊緣，請把四個橘色圓點拖到文件的四個角，或拖曳邊上的白色短條整條邊移動。');return false}
-function setSource(el,w,h){
-  const k=Math.min(1,MAXS/Math.max(w,h));
-  src=canvasOf(Math.round(w*k),Math.round(h*k));src.getContext('2d').drawImage(el,0,0,src.width,src.height);
-  autoDetect();showEdit()}
-async function loadFile(f){
-  busy(true);await tick();const url=URL.createObjectURL(f);
-  try{const img=new Image();img.src=url;await img.decode();setSource(img,img.naturalWidth,img.naturalHeight)}
-  catch(_){toast('這個檔案讀不到，請換一張 JPG 或 PNG 照片。')}
-  finally{URL.revokeObjectURL(url);busy(false);updQ()}}
-function updQ(){$('#queue').textContent=queue.length?`還有 ${queue.length} 張照片等著處理`:'';const n=$('#next');n.hidden=!queue.length;n.textContent=`下一張照片（還有 ${queue.length} 張）`}
-function showEdit(){$('#edit').hidden=false;$('#done').hidden=true;layout()}
-function showDone(){$('#edit').hidden=true;$('#done').hidden=false;$('#stage').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
-async function doWarp(keepRot){
-  busy(true);await tick();
-  try{const[W,H]=outSize(),img=warp(src,quad,W,H);warped=canvasOf(W,H);warped.getContext('2d').putImageData(img,0,0);
-    if(!keepRot)rot=0;await render();showDone()}
-  catch(e){toast('轉正失敗，請再試一次或換張照片。')}
+/* ---------- result ---------- */
+function drawPreview(orig){
+  if(!cur||!cur.pbase)return;const c=orig?rotated(cur.pbase,cur.rot):finish(cur.pbase,cur,true),pv=$('#pv');
+  pv.width=c.width;pv.height=c.height;pv.getContext('2d').drawImage(c,0,0);free(c);fitPv()}
+function fitPv(){const pv=$('#pv'),st=pv.parentNode,W=st.clientWidth-28,H=st.clientHeight-28;if(!pv.width||W<=0||H<=0)return;const k=Math.min(W/pv.width,H/pv.height);pv.style.width=Math.floor(pv.width*k)+'px';pv.style.height=Math.floor(pv.height*k)+'px'}
+function queuePreview(){if(pvq)return;pvq=requestAnimationFrame(()=>{pvq=0;drawPreview(false)})}
+function thumbs(){
+  $('#filters').innerHTML=FILTERS.map(([k,n])=>`<button class="fb" type="button" data-f="${k}" aria-pressed="${cur.filt===k}"><img alt="">${n}</button>`).join('');
+  const imgs=$('#filters').querySelectorAll('img');
+  FILTERS.forEach(([k],i)=>{const c=finish(cur.tbase,{rot:cur.rot,filt:k,br:0,ct:0},false);imgs[i].src=c.toDataURL('image/jpeg',.8);free(c)})}
+function sync(){
+  for(const b of document.querySelectorAll('#filters [data-f]'))b.setAttribute('aria-pressed',b.dataset.f===cur.filt);
+  for(const b of document.querySelectorAll('[data-r]'))b.setAttribute('aria-pressed',b.dataset.r===cur.ratio);
+  $('#br').value=cur.br;$('#ct').value=cur.ct;$('#brv').textContent=cur.br;$('#ctv').textContent=cur.ct;
+  $('#commit-t').textContent=cur.idx>=0?`儲存第 ${cur.idx+1} 頁`:'加入文件'}
+async function toResult(){
+  busy(true,'轉正中…');await tick();
+  try{await buildWarp(true);pickFilter();show('result');sync();drawPreview(false);thumbs();const cp=$('#cmp');cp.classList.remove('gone');clearTimeout(cp._t);cp._t=setTimeout(()=>cp.classList.add('gone'),3200)}
+  catch(e){toast('轉正失敗，請再試一次。')}
   finally{busy(false)}}
-async function render(){
-  const w=warped.width,h=warped.height,sw=rot%2?h:w,sh=rot%2?w:h,c=canvasOf(sw,sh),x=c.getContext('2d');
-  x.translate(sw/2,sh/2);x.rotate(rot*Math.PI/2);x.drawImage(warped,-w/2,-h/2);x.setTransform(1,0,0,1,0,0);
-  if(filt!=='orig'){const bg=bgOf(c),id=x.getImageData(0,0,sw,sh);applyFilter(id.data,bg,filt);x.putImageData(id,0,0)}
-  outBlob=await new Promise(r=>c.toBlob(r,'image/jpeg',.9));outDim=[sw,sh];
-  if(outUrl)URL.revokeObjectURL(outUrl);outUrl=URL.createObjectURL(outBlob);$('#out').src=outUrl}
-async function rerender(){busy(true);await tick();try{await render()}finally{busy(false)}}
-function stamp(){const d=new Date(),p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`}
-async function save(data,name){
-  const type=name.endsWith('.pdf')?'application/pdf':'image/jpeg';
-  if(matchMedia('(pointer:coarse)').matches&&navigator.canShare){
-    try{const file=new File([data],name,{type});
-      if(navigator.canShare({files:[file]})){await navigator.share({files:[file]});return}}
-    catch(e){if(e&&e.name==='AbortError')return}}
-  const a=document.createElement('a'),u=URL.createObjectURL(data);a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
-  setTimeout(()=>URL.revokeObjectURL(u),4000);toast('已下載 '+name)}
+async function pageFromCur(){
+  const c=finish(cur.warped,cur,false),out=await blobOf(c,.9),t=scaled(c,420),tb=await blobOf(t,.82);
+  const pg={file:cur.file,qn:cur.quad.map(([a,b])=>[a/cur.src.width,b/cur.src.height]),rot:cur.rot,filt:cur.filt,ratio:cur.ratio,br:cur.br,ct:cur.ct,flagged:false,out,w:c.width,h:c.height,thumb:URL.createObjectURL(tb)};
+  free(c);free(t);return pg}
 
-/* ---------- PDF ---------- */
-async function buildPdf(){
+/* ---------- document ---------- */
+function renderDoc(){
+  const n=pages.length;$('#nav-count').textContent=n;$('#nav-count').className='badge'+(n?'':' z');
+  $('#empty').hidden=!!n;$('#grid').hidden=!n;$('#dhead').hidden=!n;$('#pdf').disabled=$('#saveall').disabled=!n;
+  $('#saveall').lastChild.textContent=n>1?`存成圖片（${n} 張）`:'存成圖片';
+  $('#grid').innerHTML=pages.map((p,i)=>`<div class="pg"><button class="th" type="button" data-edit="${i}" aria-label="編輯第 ${i+1} 頁"><img src="${p.thumb}" alt=""><span class="no">${i+1}</span>${p.flagged?'<span class="warn">請檢查</span>':''}</button>
+    <div class="pga"><button class="ib" type="button" data-mv="${i}" data-d="-1" aria-label="第 ${i+1} 頁往前移"${i?'':' disabled'}>${I('left')}</button><button class="ib" type="button" data-edit="${i}" aria-label="編輯第 ${i+1} 頁">${I('edit')}</button><button class="ib" type="button" data-del="${i}" aria-label="刪除第 ${i+1} 頁">${I('trash')}</button><button class="ib" type="button" data-mv="${i}" data-d="1" aria-label="第 ${i+1} 頁往後移"${i<n-1?'':' disabled'}>${I('right')}</button></div></div>`).join('')
+    +`<div class="add"><label class="btn pri" for="cam">${I('cam')}拍照</label><label class="btn" for="pick">${I('img')}選相片</label></div>`;
+  clearArm=false;$('#clear').textContent='全部清除'}
+const fname=()=>($('#fname').value.trim().replace(/[\\/:*?"<>|]+/g,'_').replace(/\.pdf$/i,''))||('掃描文件_'+today());
+async function buildPdf(size){
   const enc=new TextEncoder(),parts=[],offs=[],f=n=>n.toFixed(2);let pos=0;
   const add=x=>{const b=typeof x==='string'?enc.encode(x):x;parts.push(b);pos+=b.length};
   const obj=(id,...xs)=>{offs[id]=pos;add(id+' 0 obj\n');xs.forEach(add);add('\nendobj\n')};
   add(new Uint8Array([37,80,68,70,45,49,46,52,10,37,226,227,207,211,10]));
-  const N=pages.length;
-  obj(1,'<< /Type /Catalog /Pages 2 0 R >>');
+  const N=pages.length;obj(1,'<< /Type /Catalog /Pages 2 0 R >>');
   obj(2,`<< /Type /Pages /Kids [${pages.map((_,i)=>(3+3*i)+' 0 R').join(' ')}] /Count ${N} >>`);
   for(let i=0;i<N;i++){
-    const p=pages[i],id=3+3*i,jpg=new Uint8Array(await p.blob.arrayBuffer());
-    const land=!p.card&&p.w>p.h,PW=land?841.89:595.28,PH=land?595.28:841.89;let dw,dh,x,y;
-    if(p.card){[dw,dh]=p.w>=p.h?[242.65,153.07]:[153.07,242.65];x=(PW-dw)/2;y=PH-72-dh}
-    else{const m=18,k=Math.min((PW-2*m)/p.w,(PH-2*m)/p.h);dw=p.w*k;dh=p.h*k;x=(PW-dw)/2;y=(PH-dh)/2}
+    const p=pages[i],id=3+3*i,jpg=new Uint8Array(await p.out.arrayBuffer()),card=p.ratio==='card';let PW,PH,dw,dh,x,y;
+    if(size==='fit'){const k=841.89/Math.max(p.w,p.h);PW=dw=p.w*k;PH=dh=p.h*k;x=y=0}
+    else{const land=!card&&p.w>p.h;PW=land?841.89:595.28;PH=land?595.28:841.89;
+      if(card){[dw,dh]=p.w>=p.h?[242.65,153.07]:[153.07,242.65];x=(PW-dw)/2;y=PH-72-dh}
+      else{const m=18,k=Math.min((PW-2*m)/p.w,(PH-2*m)/p.h);dw=p.w*k;dh=p.h*k;x=(PW-dw)/2;y=(PH-dh)/2}}
     const cs=`q ${f(dw)} 0 0 ${f(dh)} ${f(x)} ${f(y)} cm /Im0 Do Q`;
-    obj(id,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im0 ${id+2} 0 R >> >> /Contents ${id+1} 0 R >>`);
+    obj(id,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${f(PW)} ${f(PH)}] /Resources << /XObject << /Im0 ${id+2} 0 R >> >> /Contents ${id+1} 0 R >>`);
     obj(id+1,`<< /Length ${cs.length} >>\nstream\n${cs}\nendstream`);
     obj(id+2,`<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpg.length} >>\nstream\n`,jpg,'\nendstream')}
   const total=3+3*N,xref=pos;let t=`xref\n0 ${total}\n0000000000 65535 f \n`;
   for(let i=1;i<total;i++)t+=String(offs[i]).padStart(10,'0')+' 00000 n \n';
   add(t+`trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
   return new Blob(parts,{type:'application/pdf'})}
-function renderPages(){
-  $('#plist').innerHTML=pages.map((p,i)=>`<li><img src="${p.url}" alt="第 ${i+1} 頁"><span>${i+1}</span><button class="x" type="button" data-i="${i}" aria-label="刪除第 ${i+1} 頁">×</button></li>`).join('');
-  $('#pcount').textContent=pages.length;$('#pages').hidden=!pages.length;clearArm=false;$('#clear').textContent='清空頁面'}
 
-/* ---------- sample photo ---------- */
+/* ---------- saving ---------- */
+function anchor(b,n){const a=document.createElement('a'),u=URL.createObjectURL(b);a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),6000)}
+async function share(files){
+  if(!touch||!navigator.canShare)return false;
+  try{if(!navigator.canShare({files}))return false;await navigator.share({files});return true}
+  catch(e){return!!e&&e.name==='AbortError'}}
+async function save(blob,name){
+  if(dl){try{await dl.save({filename:name,data:blob});toast('已儲存 '+name)}catch(e){toast(e&&e.code==='declined'?'已取消儲存':'沒有存成功，請再試一次')}return}
+  if(await share([new File([blob],name,{type:name.endsWith('.pdf')?'application/pdf':'image/jpeg'})]))return;
+  anchor(blob,name);toast('已下載 '+name)}
+async function saveMany(list){
+  if(list.length===1)return save(list[0][0],list[0][1]);
+  if(dl){for(const[b,n]of list){try{await dl.save({filename:n,data:b})}catch(e){if(e&&e.code==='declined')break}}return}
+  if(await share(list.map(([b,n])=>new File([b],n,{type:'image/jpeg'}))))return;
+  for(const[b,n]of list){anchor(b,n);await new Promise(r=>setTimeout(r,350))}
+  toast(`已下載 ${list.length} 張圖片`)}
+
+/* ---------- sample ---------- */
 function makeSample(){
-  const W=1400,H=1050,c=canvasOf(W,H),x=c.getContext('2d');
+  const W=1400,H=1050,c=cnv(W,H),x=c.getContext('2d');
   const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#86603f');g.addColorStop(1,'#553823');x.fillStyle=g;x.fillRect(0,0,W,H);
   let s=11;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
   for(let i=0;i<280;i++){x.fillStyle=rnd()<.5?`rgba(40,22,10,${.05+rnd()*.08})`:`rgba(210,160,110,${.03+rnd()*.06})`;x.fillRect(0,rnd()*H,W,1+rnd()*5)}
-  const D=canvasOf(840,1188),d=D.getContext('2d'),F='"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif';
+  const D=cnv(840,1188),d=D.getContext('2d'),F='"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif';
   d.fillStyle='#fdfdfb';d.fillRect(0,0,840,1188);d.fillStyle='#1d2329';d.font=`700 50px ${F}`;d.fillText('保險要保書',70,125);
   d.font=`24px ${F}`;d.fillStyle='#5b6670';d.fillText('範例文件，僅供示範',70,170);d.fillStyle='#1d2329';d.fillRect(70,198,700,4);
   ['要保人','被保險人','出生日期','聯絡電話','通訊地址'].forEach((t,i)=>{const y=245+i*72;d.strokeStyle='#9aa4ad';d.lineWidth=2;d.strokeRect(70,y,700,58);
@@ -447,42 +652,65 @@ function makeSample(){
   d.fillStyle='#1d2329';d.fillRect(460,1075,310,2);d.font=`22px ${F}`;d.fillText('要保人簽名',460,1112);
   const q=[[480,92],[1030,146],[1082,968],[382,986]];
   x.save();x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=42;x.shadowOffsetX=16;x.shadowOffsetY=24;x.fillStyle='#000';path(x,q);x.fill();x.restore();
-  const m=homog(q,[[0,0],[840,0],[840,1188],[0,1188]]),id=x.getImageData(0,0,W,H),o=id.data,dd=d.getImageData(0,0,840,1188).data;
+  const m=DET.homog(q,[[0,0],[840,0],[840,1188],[0,1188]]),id=x.getImageData(0,0,W,H),o=id.data,dd=d.getImageData(0,0,840,1188).data;
   for(let py=85;py<995;py++)for(let px=375;px<1090;px++){const z=m[6]*px+m[7]*py+1,u=(m[0]*px+m[1]*py+m[2])/z,v=(m[3]*px+m[4]*py+m[5])/z;
     if(u<0||v<0||u>=840||v>=1188)continue;const si=((v|0)*840+(u|0))*4,oi=(py*W+px)*4,L=.83+.15*(px/W)-.07*(py/H);
     o[oi]=dd[si]*L;o[oi+1]=dd[si+1]*L;o[oi+2]=dd[si+2]*L*.97}
-  x.putImageData(id,0,0);return c}
+  x.putImageData(id,0,0);free(D);return c}
 
 /* ---------- events ---------- */
-async function takeFiles(list){const fs=[...list].filter(f=>!f.type||f.type.startsWith('image/'));if(!fs.length)return;queue=fs.slice(1);await loadFile(fs[0])}
 for(const inp of[$('#cam'),$('#pick')])inp.addEventListener('change',()=>{const l=[...inp.files];inp.value='';takeFiles(l)});
-const st=$('#stage');st.addEventListener('dragover',e=>e.preventDefault());st.addEventListener('drop',e=>{e.preventDefault();takeFiles(e.dataTransfer.files)});
-$('#redetect').onclick=()=>{if(src){autoDetect();draw()}};
-$('#full').onclick=()=>{if(!src)return;const W=src.width,H=src.height;quad=[[0,0],[W,0],[W,H],[0,H]];draw();say('已選取整張照片。')};
-$('#go').onclick=()=>{if(src)doWarp(false)};
-$('#back').onclick=showEdit;
-$('#next').onclick=()=>{if(queue.length)loadFile(queue.shift())};
-$('#filters').onclick=e=>{const b=e.target.closest('[data-f]');if(!b||b.dataset.f===filt)return;filt=b.dataset.f;
-  for(const c of $('#filters').children)c.setAttribute('aria-pressed',c===b);rerender()};
-$('#ratios').onclick=e=>{const b=e.target.closest('[data-r]');if(!b||b.dataset.r===ratio)return;ratio=b.dataset.r;
-  for(const c of $('#ratios').children)c.setAttribute('aria-pressed',c===b);doWarp(true)};
-$('#rl').onclick=()=>{rot=(rot+3)%4;rerender()};
-$('#rr').onclick=()=>{rot=(rot+1)%4;rerender()};
-$('#savejpg').onclick=()=>{if(outBlob)save(outBlob,`scan_${stamp()}.jpg`)};
-$('#addpage').onclick=async()=>{
-  if(!outBlob)return;pages.push({blob:outBlob,w:outDim[0],h:outDim[1],card:ratio==='card',url:URL.createObjectURL(outBlob)});
-  renderPages();toast(`已加入第 ${pages.length} 頁`);
-  if(queue.length){await loadFile(queue.shift())}};
-$('#plist').onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;const p=pages.splice(+b.dataset.i,1)[0];URL.revokeObjectURL(p.url);renderPages()};
-$('#clear').onclick=()=>{if(!clearArm){clearArm=true;$('#clear').textContent='再按一次確認清空';return}
-  pages.forEach(p=>URL.revokeObjectURL(p.url));pages=[];renderPages()};
-$('#pdf').onclick=async()=>{if(!pages.length)return;busy(true);await tick();let b=null;
-  try{b=await buildPdf()}catch(_){toast('PDF 產生失敗，請再試一次。')}finally{busy(false)}
-  if(b)save(b,`scan_${stamp()}.pdf`)};
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer&&e.dataTransfer.files.length)takeFiles(e.dataTransfer.files)});
+$('#nav-edit').onclick=()=>{if(cur)show(cur.stage==='result'&&cur.pbase?'result':'edit')};
+$('#nav-doc').onclick=()=>show('doc');
+$('#t-auto').onclick=()=>{if(!cur)return;autoDetect(false);hint();draw();toast(cur.found?'已重新偵測':'沒找到文件邊緣，請手動拖曳四個角')};
+$('#t-full').onclick=()=>{if(!cur)return;const W=cur.src.width,H=cur.src.height;cur.quad=[[0,0],[W,0],[W,H],[0,H]];draw()};
+$('#ed-cancel').onclick=()=>{dropCur();show('doc')};
+$('#go').onclick=()=>{if(cur)toResult()};
+$('#back').onclick=()=>show('edit');
+document.querySelector('.seg').onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;
+  for(const x of document.querySelectorAll('[data-tab]'))x.setAttribute('aria-pressed',x===b);
+  $('#filters').hidden=b.dataset.tab!=='filter';$('#adj').hidden=b.dataset.tab!=='adj'};
+$('#filters').onclick=e=>{const b=e.target.closest('[data-f]');if(!b||!cur)return;cur.filt=b.dataset.f;cur.autoF=false;sync();drawPreview(false)};
+document.querySelector('#adj').addEventListener('click',async e=>{const b=e.target.closest('[data-r]');if(!b||!cur||b.dataset.r===cur.ratio)return;
+  cur.ratio=b.dataset.r;sync();busy(true,'重新計算…');await tick();try{await buildWarp(true);drawPreview(false);thumbs()}finally{busy(false)}});
+$('#rl').onclick=()=>{cur.rot=(cur.rot+3)%4;cur.bg=null;drawPreview(false);thumbs()};
+$('#rr').onclick=()=>{cur.rot=(cur.rot+1)%4;cur.bg=null;drawPreview(false);thumbs()};
+for(const k of['br','ct'])$('#'+k).addEventListener('input',e=>{cur[k]=+e.target.value;$('#'+k+'v').textContent=cur[k];queuePreview()});
+$('#reset').onclick=()=>{cur.br=cur.ct=0;sync();drawPreview(false)};
+{const pv=$('#pv'),on=()=>{if(cur)drawPreview(true)},off=()=>{if(cur)drawPreview(false)};
+  pv.addEventListener('pointerdown',on);pv.addEventListener('pointerup',off);pv.addEventListener('pointerleave',off);pv.addEventListener('pointercancel',off);
+  pv.addEventListener('contextmenu',e=>e.preventDefault())}
+$('#save1').onclick=async()=>{if(!cur)return;busy(true,'產生圖片…');await tick();let b=null;
+  try{const c=finish(cur.warped,cur,false);b=await blobOf(c,.92);free(c)}finally{busy(false)}
+  if(b)save(b,`${fname()}${cur.idx>=0?'_'+(cur.idx+1):''}.jpg`)};
+$('#commit').onclick=async()=>{if(!cur)return;busy(true,'儲存中…');await tick();
+  try{const pg=await pageFromCur();
+    if(cur.idx>=0){URL.revokeObjectURL(pages[cur.idx].thumb);pages[cur.idx]=pg;toast(`已更新第 ${cur.idx+1} 頁`)}
+    else{pages.push(pg);toast(`已加入第 ${pages.length} 頁`)}
+    dropCur();renderDoc();show('doc')}
+  catch(e){toast('儲存失敗，請再試一次。')}
+  finally{busy(false)}};
+$('#grid').onclick=e=>{
+  const ed=e.target.closest('[data-edit]'),mv=e.target.closest('[data-mv]'),dl_=e.target.closest('[data-del]');
+  if(ed)return openFile(pages[+ed.dataset.edit].file,+ed.dataset.edit);
+  if(mv){const i=+mv.dataset.mv,j=i+(+mv.dataset.d);if(j<0||j>=pages.length)return;[pages[i],pages[j]]=[pages[j],pages[i]];renderDoc();return}
+  if(dl_){const i=+dl_.dataset.del,p=pages.splice(i,1)[0];renderDoc();toast(`已刪除第 ${i+1} 頁`,{label:'復原',fn:()=>{pages.splice(Math.min(i,pages.length),0,p);renderDoc()}})}};
+$('#clear').onclick=()=>{if(!clearArm){clearArm=true;$('#clear').textContent='再按一次確認清除';return}
+  pages.forEach(p=>URL.revokeObjectURL(p.thumb));pages=[];renderDoc()};
+$('#saveall').onclick=()=>{if(pages.length)saveMany(pages.map((p,i)=>[p.out,`${fname()}_${i+1}.jpg`]))};
+$('#pdf').onclick=async()=>{if(!pages.length)return;busy(true,'產生 PDF…');await tick();let b=null;
+  try{b=await buildPdf($('#psize').value)}catch(e){toast('PDF 產生失敗，請再試一次。')}finally{busy(false)}
+  if(b)save(b,fname()+'.pdf')};
 
-setSource(makeSample(),1400,1050);
-say('這是範例照片，已自動框出文件，按「轉正」看看效果；要處理自己的文件，按「拍照」或「選相片」。');
-
+/* ---------- start ---------- */
+$('#fname').placeholder='掃描文件_'+today();
+renderDoc();
+{const s=makeSample();s.toBlob(b=>{free(s);openFile(b,-1,true)},'image/jpeg',.92)}
+try{const ic=cnv(180,180),x=ic.getContext('2d');x.fillStyle='#ff5b2e';x.fillRect(0,0,180,180);x.fillStyle='#fbfaf6';x.fillRect(58,44,64,88);x.fillStyle='#1f0c05';
+  for(let i=0;i<4;i++)x.fillRect(70,64+i*16,i===3?24:40,6);const l=document.createElement('link');l.rel='apple-touch-icon';l.href=ic.toDataURL('image/png');document.head.appendChild(l)}catch(e){}
+(async()=>{try{if(window.claude&&window.claude.use)dl=await window.claude.use('downloads')}catch(e){dl=null}})();
 }
 </script>
 </body>
